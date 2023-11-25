@@ -4,6 +4,7 @@ import {
   fetchAllProductsAsync,
   fetchProductsByFiltersAsync,
   selectAllProducts,
+  selectTotalItems,
 } from "../../ProductSlice";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -20,34 +21,19 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
+import { ITEMS_PER_PAGE } from "../../../../app/constants";
 
 const sortOptions = [
   { name: "Best Rating", sort: "rating", order: "desc", current: false },
   { name: "Price: Low to High", sort: "price", order: "asc", current: false },
   { name: "Price: High to Low", sort: "price", order: "desc", current: false },
 ];
+
 const filters = [
-  {
-    id: "color",
-    name: "Color",
-    options: [
-      { value: "white", label: "White", checked: false },
-      { value: "beige", label: "Beige", checked: false },
-      { value: "blue", label: "Blue", checked: true },
-      { value: "brown", label: "Brown", checked: false },
-      { value: "green", label: "Green", checked: false },
-      { value: "purple", label: "Purple", checked: false },
-    ],
-  },
   {
     id: "category",
     name: "Category",
     options: [
-      { value: "new-arrivals", label: "New Arrivals", checked: false },
-      { value: "sale", label: "Sale", checked: false },
-      { value: "travel", label: "Travel", checked: true },
-      { value: "organization", label: "Organization", checked: false },
-      { value: "accessories", label: "Accessories", checked: false },
       { value: "smartphones", label: "smartphones", checked: false },
       { value: "laptops", label: "laptops", checked: false },
       { value: "fragrances", label: "fragrances", checked: false },
@@ -71,17 +57,9 @@ const filters = [
     ],
   },
   {
-    id: "size",
-    name: "Size",
     id: "brand",
     name: "Brands",
     options: [
-      { value: "2l", label: "2L", checked: false },
-      { value: "6l", label: "6L", checked: false },
-      { value: "12l", label: "12L", checked: false },
-      { value: "18l", label: "18L", checked: false },
-      { value: "20l", label: "20L", checked: false },
-      { value: "40l", label: "40L", checked: true },
       { value: "Apple", label: "Apple", checked: false },
       { value: "Samsung", label: "Samsung", checked: false },
       { value: "OPPO", label: "OPPO", checked: false },
@@ -221,94 +199,157 @@ function classNames(...classes) {
 }
 
 export default function ProductList() {
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [filter, setFilter] = useState({});
   const dispatch = useDispatch();
   const products = useSelector(selectAllProducts);
+  const totalItems = useSelector(selectTotalItems);
 
+  const [filter, setFilter] = useState({});
+  const [sort, setSort] = useState({});
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [page, setPage] = useState(1);
   const handleFilter = (e, section, option) => {
-    console.log(section, option);
-    const newFilter = { ...filter, [section]: option };
+    console.log(e.target.checked);
+    const newFilter = { ...filter };
+    // TODO : on server it will support multiple categories
+    if (e.target.checked) {
+      if (newFilter[section.id]) {
+        newFilter[section.id].push(option.value);
+      } else {
+        newFilter[section.id] = [option.value];
+      }
+    } else {
+      const index = newFilter[section.id].findIndex(
+        (el) => el === option.value
+      );
+      newFilter[section.id].splice(index, 1);
+    }
+    console.log({ newFilter });
+
     setFilter(newFilter);
-    dispatch(fetchProductsByFiltersAsync(newFilter));
   };
 
   const handleSort = (e, option) => {
-    const newSort = { ...filter, _sort: option.sort, _order: option.order };
-    setFilter(newSort);
-    dispatch(fetchProductsByFiltersAsync(newSort));
+    const sort = { _sort: option.sort, _order: option.order };
+    console.log({ sort });
+    setSort(sort);
+  };
+
+  const handlePage = (page) => {
+    console.log({ page });
+    setPage(page);
   };
 
   useEffect(() => {
-    dispatch(fetchAllProductsAsync());
-  }, [dispatch]);
+    const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
+    dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination }));
+  }, [dispatch, filter, sort, page]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [totalItems, sort]);
 
   return (
-    <div>
+    <div className="bg-white">
       <div>
-        <div className="bg-white">
-          <div>
-            {/* Mobile filter dialog */}
-            <MobileFilter
-              mobileFiltersOpen={mobileFiltersOpen}
-              setMobileFiltersOpen={setMobileFiltersOpen}
-              handleFilter={handleFilter}
-            ></MobileFilter>
+        <MobileFilter
+          handleFilter={handleFilter}
+          mobileFiltersOpen={mobileFiltersOpen}
+          setMobileFiltersOpen={setMobileFiltersOpen}
+        ></MobileFilter>
 
-            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
-                <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-                  All Products
-                </h1>
+        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+              All Products
+            </h1>
 
-                <div className="flex items-center">
-                  <SortBy handleSort={handleSort}></SortBy>
-
-                  <button
-                    type="button"
-                    className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
-                  >
-                    <span className="sr-only">View grid</span>
-                    <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
-                    onClick={() => setMobileFiltersOpen(true)}
-                  >
-                    <span className="sr-only">Filters</span>
-                    <FunnelIcon className="h-5 w-5" aria-hidden="true" />
-                  </button>
+            <div className="flex items-center">
+              <Menu as="div" className="relative inline-block text-left">
+                <div>
+                  <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                    Sort
+                    <ChevronDownIcon
+                      className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                      aria-hidden="true"
+                    />
+                  </Menu.Button>
                 </div>
-              </div>
 
-              <section
-                aria-labelledby="products-heading"
-                className="pb-24 pt-6"
+                <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+                >
+                  <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <div className="py-1">
+                      {sortOptions.map((option) => (
+                        <Menu.Item key={option.name}>
+                          {({ active }) => (
+                            <p
+                              onClick={(e) => handleSort(e, option)}
+                              className={classNames(
+                                option.current
+                                  ? "font-medium text-gray-900"
+                                  : "text-gray-500",
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm"
+                              )}
+                            >
+                              {option.name}
+                            </p>
+                          )}
+                        </Menu.Item>
+                      ))}
+                    </div>
+                  </Menu.Items>
+                </Transition>
+              </Menu>
+
+              <button
+                type="button"
+                className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
               >
-                <h2 id="products-heading" className="sr-only">
-                  Products
-                </h2>
-
-                <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-                  {/* Filters */}
-                  <DesktopFilter handleFilter={handleFilter}></DesktopFilter>
-
-                  {/* Product grid */}
-                  <div className="lg:col-span-3">
-                    <ProductGrid products={products}></ProductGrid>
-                  </div>
-                </div>
-              </section>
-              {/* End of Filter and Product */}
-              {/* Start of pagination */}
-              <div>
-                <Pagination></Pagination>
-              </div>
-              {/* End of pagination */}
-            </main>
+                <span className="sr-only">View grid</span>
+                <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
+                onClick={() => setMobileFiltersOpen(true)}
+              >
+                <span className="sr-only">Filters</span>
+                <FunnelIcon className="h-5 w-5" aria-hidden="true" />
+              </button>
+            </div>
           </div>
-        </div>
+
+          <section aria-labelledby="products-heading" className="pb-24 pt-6">
+            <h2 id="products-heading" className="sr-only">
+              Products
+            </h2>
+
+            <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+              <DesktopFilter handleFilter={handleFilter}></DesktopFilter>
+              {/* Product grid */}
+              <div className="lg:col-span-3">
+                <ProductGrid products={products}></ProductGrid>
+              </div>
+              {/* Product grid end */}
+            </div>
+          </section>
+
+          {/* section of product and filters ends */}
+          <Pagination
+            page={page}
+            setPage={setPage}
+            handlePage={handlePage}
+            totalItems={totalItems}
+          ></Pagination>
+        </main>
       </div>
     </div>
   );
@@ -363,8 +404,6 @@ function MobileFilter({
 
               {/* Filters */}
               <form className="mt-4 border-t border-gray-200">
-                <h3 className="sr-only">Categories</h3>
-
                 {filters.map((section) => (
                   <Disclosure
                     as="div"
@@ -406,6 +445,9 @@ function MobileFilter({
                                   defaultValue={option.value}
                                   type="checkbox"
                                   defaultChecked={option.checked}
+                                  onChange={(e) =>
+                                    handleFilter(e, section, option)
+                                  }
                                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 />
                                 <label
@@ -431,59 +473,9 @@ function MobileFilter({
   );
 }
 
-function SortBy({ handleSort }) {
-  return (
-    <Menu as="div" className="relative inline-block text-left">
-      <div>
-        <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-          Sort
-          <ChevronDownIcon
-            className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
-            aria-hidden="true"
-          />
-        </Menu.Button>
-      </div>
-
-      <Transition
-        as={Fragment}
-        enter="transition ease-out duration-100"
-        enterFrom="transform opacity-0 scale-95"
-        enterTo="transform opacity-100 scale-100"
-        leave="transition ease-in duration-75"
-        leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
-      >
-        <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="py-1">
-            {sortOptions.map((option) => (
-              <Menu.Item key={option.name}>
-                {({ active }) => (
-                  <p
-                    onClick={(e) => handleSort(e, option)}
-                    className={classNames(
-                      option.current
-                        ? "font-medium text-gray-900 cursor-pointer"
-                        : "text-gray-500 cursor-pointer",
-                      active ? "bg-gray-100 cursor-pointer" : "",
-                      "block px-4 py-2 text-sm cursor-pointer"
-                    )}
-                  >
-                    {option.name}
-                  </p>
-                )}
-              </Menu.Item>
-            ))}
-          </div>
-        </Menu.Items>
-      </Transition>
-    </Menu>
-  );
-}
-
 function DesktopFilter({ handleFilter }) {
   return (
     <form className="hidden lg:block">
-      <h3 className="sr-only">Categories</h3>
       {filters.map((section) => (
         <Disclosure
           as="div"
@@ -516,9 +508,7 @@ function DesktopFilter({ handleFilter }) {
                         defaultValue={option.value}
                         type="checkbox"
                         defaultChecked={option.checked}
-                        onChange={(e) =>
-                          handleFilter(e, section.id, option.value)
-                        }
+                        onChange={(e) => handleFilter(e, section, option)}
                         className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                       />
                       <label
@@ -539,7 +529,7 @@ function DesktopFilter({ handleFilter }) {
   );
 }
 
-function Pagination() {
+function Pagination({ page, setPage, handlePage, totalItems }) {
   return (
     <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
       <div className="flex flex-1 justify-between sm:hidden">
@@ -559,9 +549,17 @@ function Pagination() {
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div>
           <p className="text-sm text-gray-700">
-            Showing <span className="font-medium">1</span> to{" "}
-            <span className="font-medium">10</span> of{" "}
-            <span className="font-medium">97</span> results
+            Showing{" "}
+            <span className="font-medium">
+              {(page - 1) * ITEMS_PER_PAGE + 1}
+            </span>{" "}
+            to{" "}
+            <span className="font-medium">
+              {page * ITEMS_PER_PAGE > totalItems
+                ? totalItems
+                : page * ITEMS_PER_PAGE}
+            </span>{" "}
+            of <span className="font-medium">{totalItems}</span> results
           </p>
         </div>
         <div>
@@ -576,19 +574,24 @@ function Pagination() {
               <span className="sr-only">Previous</span>
               <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
             </a>
-            <a
-              href="#"
-              aria-current="page"
-              className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              1
-            </a>
-            <a
-              href="#"
-              className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-            >
-              2
-            </a>
+            {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
+
+            {Array.from({ length: Math.ceil(totalItems / ITEMS_PER_PAGE) }).map(
+              (el, index) => (
+                <div
+                  onClick={(e) => handlePage(index + 1)}
+                  aria-current="page"
+                  className={`relative cursor-pointer z-10 inline-flex items-center ${
+                    index + 1 === page
+                      ? "bg-indigo-600 text-white"
+                      : "text-gray-400"
+                  } px-4 py-2 text-sm font-semibold  focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
+                >
+                  {index + 1}
+                </div>
+              )
+            )}
+
             <a
               href="#"
               className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
