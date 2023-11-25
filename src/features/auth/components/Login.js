@@ -1,15 +1,11 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-// eslint-disable-next-line
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-// eslint-disable-next-line
 import { increment, incrementAsync, selectCount } from "../authSlice";
 import { Link } from "react-router-dom";
 import logo from "../../../Y-N E-commerce.jpg";
 export default function Login() {
-  // eslint-disable-next-line
   const count = useSelector(selectCount);
-  // eslint-disable-next-line
+
   const dispatch = useDispatch();
 
   return (

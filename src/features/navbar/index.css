@@ -1,0 +1,30 @@
+.nav-item a{
+    position: relative;
+}
+
+.nav-item a:hover:after {
+    width: 100%;
+}
+.nav-item a,
+.nav-item a:after,
+.nav-item a:before {
+    transition: all .5s;
+}
+
+.nav-item a:hover {
+    color: white;
+}
+
+.nav-item a:after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 0%;
+    content: '.';
+    color: transparent;
+    background: #aaa;
+    height: 1px;
+}
+
