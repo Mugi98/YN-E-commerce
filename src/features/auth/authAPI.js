@@ -17,7 +17,6 @@ export function checkUser(loginInfo) {
     const password = loginInfo.password;
     const response = await fetch("http://localhost:8080/users?email=" + email);
     const data = await response.json();
-    console.log({ data });
     if (data.length) {
       if (password === data[0].password) {
         resolve({ data: data[0] });
@@ -33,7 +32,6 @@ export function checkUser(loginInfo) {
 
 export function updateUser(update) {
   return new Promise(async (resolve) => {
-    console.log(update.id, "API");
     const id = update.id;
     const response = await fetch("http://localhost:8080/users/" + id, {
       method: "PATCH",

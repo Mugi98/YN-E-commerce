@@ -36,7 +36,6 @@ export default function ProductDetails() {
   const params = useParams();
 
   const handleCart = (e) => {
-    console.log(user);
     e.preventDefault();
     const newItem = { ...product, quantity: 1, user: user.id };
     delete newItem["id"];

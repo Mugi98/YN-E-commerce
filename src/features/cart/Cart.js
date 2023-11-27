@@ -14,6 +14,12 @@ export default function Cart() {
   const items = useSelector(selectItems);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(true);
+
+  const totalDiscountedPrice = items.reduce((total, items) => {
+    const discountedAmount = (items.discountPercentage / 100) * items.price;
+    return Math.round(total + (items.price - discountedAmount));
+  }, 0);
+
   const totalAmount = items.reduce(
     (amount, item) => item.price * item.quantity + amount,
     0
@@ -24,7 +30,12 @@ export default function Cart() {
   );
 
   const handleQuantity = (e, item) => {
-    dispatch(updateCartAsync({ ...item, quantity: +e.target.value }));
+    dispatch(
+      updateCartAsync({
+        ...item,
+        quantity: +e.target.value,
+      })
+    );
   };
   const handleRemove = (e, itemId) => {
     dispatch(deleteItemFromCartAsync(itemId));
@@ -56,7 +67,17 @@ export default function Cart() {
                         <h3>
                           <a href={item.id}>{item.title}</a>
                         </h3>
-                        <p className="ml-4">${item.price}</p>
+                        <div>
+                          <p className="ml-4 line-through text-gray-500">
+                            ${item?.price}
+                          </p>
+                          <p className="ml-4">
+                            $
+                            {Math.round(
+                              item?.price * (1 - item?.discountPercentage / 100)
+                            )}
+                          </p>
+                        </div>
                       </div>
                       <p className="mt-1 text-sm text-gray-500">{item.brand}</p>
                     </div>
@@ -100,12 +121,16 @@ export default function Cart() {
 
         <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
           <div className="flex justify-between my-2 text-base font-medium text-gray-900">
-            <p>Total Items in Cart</p>
-            <p>{totalItems} items</p>
-          </div>
-          <div className="flex justify-between my-2 text-base font-medium text-gray-900">
             <p>Subtotal</p>
             <p>${totalAmount}</p>
+          </div>
+          <div className="flex justify-between my-2 text-base font-medium text-gray-900">
+            <p>Your Saving</p>
+            <p className="text-green-500">${totalDiscountedPrice}</p>
+          </div>
+          <div className="flex justify-between my-2 text-base font-medium text-gray-900">
+            <p>Total</p>
+            <p>${totalAmount - totalDiscountedPrice}</p>
           </div>
           <p className="mt-0.5 text-sm text-gray-500">
             Shipping and taxes calculated at checkout.

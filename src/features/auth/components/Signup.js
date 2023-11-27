@@ -47,7 +47,6 @@ export default function Signup() {
                   ],
                 })
               );
-              console.log(data);
             })}
           >
             <div>

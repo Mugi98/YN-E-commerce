@@ -12,7 +12,10 @@ import {
   updateUserAsync,
 } from "../features/auth/authSlice";
 import { useState } from "react";
-import { createOrderAsync } from "../features/order/orderSlice";
+import {
+  createOrderAsync,
+  selectCurrentOrder,
+} from "../features/order/orderSlice";
 
 function Checkout() {
   const dispatch = useDispatch();
@@ -25,6 +28,8 @@ function Checkout() {
 
   const user = useSelector(selectLoggedInUser);
   const items = useSelector(selectItems);
+  const orderPlaced = useSelector(selectCurrentOrder);
+
   const totalAmount = items.reduce(
     (amount, item) => item.price * item.quantity + amount,
     0
@@ -33,6 +38,13 @@ function Checkout() {
 
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("cash");
+
+  const totalDiscountedPrice = items.reduce((total, items) => {
+    const discountedAmount = (items.discountPercentage / 100) * items.price;
+    return Math.round(total + (items.price - discountedAmount));
+  }, 0);
+
+  const eighteenPercent = Math.round((18 / 100) * totalDiscountedPrice);
 
   const handleQuantity = (e, item) => {
     dispatch(updateCartAsync({ ...item, quantity: +e.target.value }));
@@ -43,12 +55,10 @@ function Checkout() {
   };
 
   const handleAddress = (e) => {
-    console.log(e.target.value);
     setSelectedAddress(user.addresses[e.target.value]);
   };
 
   const handlePayment = (e) => {
-    console.log(e.target.value);
     setPaymentMethod(e.target.value);
   };
 
@@ -60,15 +70,16 @@ function Checkout() {
       user,
       paymentMethod,
       selectedAddress,
+      status: "pending",
     };
     dispatch(createOrderAsync(order));
-    //TODO : Redirect to order-success page
-    //TODO : clear cart after order
-    //TODO : on server change the stock number of items
   };
 
   return (
     <>
+      {orderPlaced && (
+        <Navigate to="/order-confirmation" replace={true}></Navigate>
+      )}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
           <div className="lg:col-span-3">
@@ -76,7 +87,6 @@ function Checkout() {
               className="bg-white px-5 py-12 mt-12"
               noValidate
               onSubmit={handleSubmit((data) => {
-                console.log(data);
                 dispatch(
                   updateUserAsync({
                     ...user,
@@ -368,7 +378,18 @@ function Checkout() {
                               <h3>
                                 <a href={item.href}>{item.title}</a>
                               </h3>
-                              <p className="ml-4">${item.price}</p>
+                              <div>
+                                <p className="ml-4 line-through text-gray-500">
+                                  ${item?.price}
+                                </p>
+                                <p className="ml-4">
+                                  $
+                                  {Math.round(
+                                    item?.price *
+                                      (1 - item?.discountPercentage / 100)
+                                  )}
+                                </p>
+                              </div>
                             </div>
                             <p className="mt-1 text-sm text-gray-500">
                               {item.brand}
@@ -417,8 +438,20 @@ function Checkout() {
                   <p>$ {totalAmount}</p>
                 </div>
                 <div className="flex justify-between my-2 text-base font-medium text-gray-900">
-                  <p>Total Items in Cart</p>
-                  <p>{totalItems} items</p>
+                  <p>Your Saving</p>
+                  <p className="text-green-500">${totalDiscountedPrice}</p>
+                </div>
+                <div className="flex justify-between my-2 text-base font-medium text-gray-900">
+                  <p>Shipping</p>
+                  <p className="text-green-500">FREE</p>
+                </div>
+                <div className="flex border-b border-gray-200 justify-between pb-6 my-2 text-base font-medium text-gray-900">
+                  <p>Taxes</p>
+                  <p className="">{eighteenPercent}</p>
+                </div>
+                <div className="flex justify-between my-2 text-base font-medium text-gray-900">
+                  <p>Total</p>
+                  <p>${totalAmount - totalDiscountedPrice + eighteenPercent}</p>
                 </div>
                 <p className="mt-0.5 text-sm text-gray-500">
                   Shipping and taxes calculated at checkout.
