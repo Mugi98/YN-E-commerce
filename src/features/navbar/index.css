@@ -28,3 +28,9 @@
     height: 1px;
 }
 
+.item-counter{
+    position: relative;
+        bottom: 20px;
+        left: 8px;
+}
+

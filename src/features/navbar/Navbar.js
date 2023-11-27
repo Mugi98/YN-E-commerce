@@ -8,6 +8,8 @@ import {
 import logo from "../../Y-N E-commerce.jpg";
 import "./index.css";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectItems } from "../cart/cartSlice";
 
 const user = {
   name: "Tom Cook",
@@ -22,9 +24,9 @@ const navigation = [
   { name: "Brand", href: "#", current: false },
 ];
 const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Log out", href: "#" },
+  { name: "Your Profile", link: "#" },
+  { name: "Settings", link: "#" },
+  { name: "Log out", link: "/login" },
 ];
 
 function classNames(...classes) {
@@ -32,6 +34,8 @@ function classNames(...classes) {
 }
 
 function NavBar({ children }) {
+  const items = useSelector(selectItems);
+
   return (
     <>
       <div className="min-h-full">
@@ -85,9 +89,11 @@ function NavBar({ children }) {
                         </button>
                       </Link>
 
-                      <span className="inline-flex items-center rounded-full mb-5 -ml-3 z-50 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
-                        3
-                      </span>
+                      {items.length > 0 && (
+                        <span className="inline-flex items-center rounded-full mb-5 -ml-3 z-50 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                          {items.length}
+                        </span>
+                      )}
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div>
@@ -114,15 +120,15 @@ function NavBar({ children }) {
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
-                                    href={item.href}
+                                  <Link
+                                    to={item.link}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
                                       "block px-4 py-2 text-sm text-gray-700"
                                     )}
                                   >
                                     {item.name}
-                                  </a>
+                                  </Link>
                                 )}
                               </Menu.Item>
                             ))}
@@ -172,38 +178,43 @@ function NavBar({ children }) {
                   ))}
                 </div>
                 <div className="border-t border-gray-700 pb-3 pt-4">
-                  <div className="flex items-center px-5">
-                    <div className="flex-shrink-0">
+                  <div className="flex justify-between px-5">
+                    <div className="flex flex-shrink-0">
                       <img
                         className="h-10 w-10 rounded-full"
                         src={user.imageUrl}
                         alt=""
                       />
-                    </div>
-                    <div className="ml-3">
-                      <div className="text-base font-medium leading-none text-white">
-                        {user.name}
+                      <div className="ml-3">
+                        <div className="text-base font-medium leading-none text-white">
+                          {user.name}
+                        </div>
+                        <div className="text-sm font-medium leading-none text-gray-400">
+                          {user.email}
+                        </div>
                       </div>
-                      <div className="text-sm font-medium leading-none text-gray-400">
-                        {user.email}
-                      </div>
                     </div>
-                    <Link to="/cart">
-                      <button
-                        type="button"
-                        className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                      >
-                        <span className="absolute -inset-1.5" />
-                        <ShoppingCartIcon
-                          className="h-6 w-6"
-                          aria-hidden="true"
-                        />
-                      </button>
-                    </Link>
 
-                    <span className="inline-flex items-center rounded-full mb-5 -ml-3 z-50 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
-                      3
-                    </span>
+                    <div className="flex justify-end">
+                      <Link to="/cart">
+                        <button
+                          type="button"
+                          className="relative ml-auto items-end flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                        >
+                          <span className="absolute -inset-1.5">
+                            <ShoppingCartIcon
+                              className="h-6 w-6"
+                              aria-hidden="true"
+                            />
+                          </span>
+                          {items.length > 0 && (
+                            <span className="item-counter inline-flex items-end rounded-full z-50 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                              {items.length}
+                            </span>
+                          )}
+                        </button>
+                      </Link>
+                    </div>
                   </div>
                   <div className="mt-3 space-y-1 px-2">
                     {userNavigation.map((item) => (
