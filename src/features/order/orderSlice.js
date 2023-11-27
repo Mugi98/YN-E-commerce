@@ -39,7 +39,6 @@ export const counterSlice = createSlice({
 
 export const { increment } = counterSlice.actions;
 
-export const orderSuccess = (state) => state.orders.orders;
 export const selectCurrentOrder = (state) => state.orders.currentOrder;
 
 export default counterSlice.reducer;

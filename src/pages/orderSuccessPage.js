@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { orderSuccess, selectCurrentOrder } from "../features/order/orderSlice";
+import { selectCurrentOrder } from "../features/order/orderSlice";
 import { Link } from "react-router-dom";
 
 function OrderSuccessPage() {
