@@ -1,11 +1,20 @@
-import { useSelector } from "react-redux";
-import { selectCurrentOrder } from "../features/order/orderSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { resetOrder, selectOrderSuccess } from "../features/order/orderSlice";
 import { Link } from "react-router-dom";
+import { resetCartAsync } from "../features/cart/cartSlice";
+import { selectLoggedInUser } from "../features/auth/authSlice";
+import { useEffect } from "react";
 
 function OrderSuccessPage() {
-  const orderPlaced = useSelector(selectCurrentOrder);
+  const orderPlaced = useSelector(selectOrderSuccess);
+  const dispatch = useDispatch();
+  const user = useSelector(selectLoggedInUser);
 
-  const totalDiscountedPrice = orderPlaced?.items.reduce(
+  useEffect(() => {
+    dispatch(resetCartAsync(user.id));
+  }, [dispatch, user]);
+
+  const totalDiscountedPrice = orderPlaced?.items?.reduce(
     (total, orderPlaced) => {
       const discountedAmount =
         (orderPlaced.discountPercentage / 100) * orderPlaced.price;
@@ -14,7 +23,7 @@ function OrderSuccessPage() {
     0
   );
   const eighteenPercent = Math.round((18 / 100) * totalDiscountedPrice);
-  const total = orderPlaced.totalAmount + eighteenPercent;
+  const total = orderPlaced?.totalAmount + eighteenPercent;
 
   return (
     <div>
@@ -33,7 +42,7 @@ function OrderSuccessPage() {
               tight and we’ll send you confirmation very soon!
             </p>
             <div className="flex py-7 border-b border-gray-200">
-              <h1 className="text-4xl">Order #{orderPlaced.id}</h1>
+              <h1 className="text-4xl">Order #{orderPlaced?.id}</h1>
             </div>
             <div className="flow-root">
               <ul className="-my-6 pt-5 divide-y divide-gray-200">
@@ -54,7 +63,7 @@ function OrderSuccessPage() {
                             <a href={item?.id}>{item?.title}</a>
                           </h3>
                           <div>
-                            <p className="ml-4">${item?.price}</p>
+                            <p className="ml-4 line-through">${item?.price}</p>
                             <p className="ml-4">
                               $
                               {Math.round(

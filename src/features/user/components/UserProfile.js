@@ -5,9 +5,11 @@ import { useForm } from "react-hook-form";
 
 export default function UserProfile() {
   const dispatch = useDispatch();
-  const userInfo = useSelector(selectUserInfo);
+  const user = useSelector(selectUserInfo);
   const [selectedEditIndex, setSelectedEditIndex] = useState(-1);
   const [showAddAddressForm, setShowAddAddressForm] = useState(false);
+
+  //TODO: We will add payment section when we work on backend.
 
   const {
     register,
@@ -18,20 +20,20 @@ export default function UserProfile() {
   } = useForm();
 
   const handleEdit = (addressUpdate, index) => {
-    const newUser = { ...userInfo, addresses: [...userInfo.addresses] }; // for shallow copy issue
+    const newUser = { ...user, addresses: [...user.addresses] }; // for shallow copy issue
     newUser.addresses.splice(index, 1, addressUpdate);
     dispatch(updateUserAsync(newUser));
     setSelectedEditIndex(-1);
   };
   const handleRemove = (e, index) => {
-    const newUser = { ...userInfo, addresses: [...userInfo.addresses] }; // for shallow copy issue
+    const newUser = { ...user, addresses: [...user.addresses] }; // for shallow copy issue
     newUser.addresses.splice(index, 1);
     dispatch(updateUserAsync(newUser));
   };
 
   const handleEditForm = (index) => {
     setSelectedEditIndex(index);
-    const address = userInfo.addresses[index];
+    const address = user.addresses[index];
     setValue("name", address.name);
     setValue("email", address.email);
     setValue("city", address.city);
@@ -42,10 +44,7 @@ export default function UserProfile() {
   };
 
   const handleAdd = (address) => {
-    const newUser = {
-      ...userInfo,
-      addresses: [...userInfo.addresses, address],
-    };
+    const newUser = { ...user, addresses: [...user.addresses, address] };
     dispatch(updateUserAsync(newUser));
     setShowAddAddressForm(false);
   };
@@ -55,16 +54,11 @@ export default function UserProfile() {
       <div className="mx-auto mt-12 bg-white max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
           <h1 className="text-4xl my-5 font-bold tracking-tight text-gray-900">
-            Name: {userInfo.name ? userInfo.name : "New User"}
+            Name: {user.name ? user.name : "New User"}
           </h1>
           <h3 className="text-xl my-5 font-bold tracking-tight text-red-900">
-            email address : {userInfo.email}
+            email address : {user.email}
           </h3>
-          {userInfo.role === "admin" && (
-            <h3 className="text-xl my-5 font-bold tracking-tight text-red-900">
-              role : {userInfo.role}
-            </h3>
-          )}
         </div>
 
         <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
@@ -83,6 +77,7 @@ export default function UserProfile() {
               className="bg-white px-5 py-12 mt-12"
               noValidate
               onSubmit={handleSubmit((data) => {
+                console.log(data);
                 handleAdd(data);
                 reset();
               })}
@@ -271,13 +266,14 @@ export default function UserProfile() {
           ) : null}
 
           <p className="mt-0.5 text-sm text-gray-500">Your Addresses :</p>
-          {userInfo.addresses.map((address, index) => (
-            <div key={index}>
+          {user.addresses.map((address, index) => (
+            <div>
               {selectedEditIndex === index ? (
                 <form
                   className="bg-white px-5 py-12 mt-12"
                   noValidate
                   onSubmit={handleSubmit((data) => {
+                    console.log(data);
                     handleEdit(data, index);
                     reset();
                   })}

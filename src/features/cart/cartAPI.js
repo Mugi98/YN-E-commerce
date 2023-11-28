@@ -44,3 +44,18 @@ export function deleteItemFromCart(itemId) {
     resolve({ data: { id: itemId } });
   });
 }
+
+export function resetCart(userId) {
+  return new Promise(async (reslove) => {
+    const response = await fetchItemsByUserId(userId);
+    const items = response.data;
+    // items.map(async (item) => {
+    //   console.log(item.id);
+    //   await deleteItemFromCart(item.id);
+    // });
+    for (let item of items) {
+      await deleteItemFromCart(item.id);
+    }
+    reslove({ status: "success" });
+  });
+}
