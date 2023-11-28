@@ -45,6 +45,7 @@ export default function Signup() {
                       pincode: data.pinCode,
                     },
                   ],
+                  role: "user",
                 })
               );
             })}
