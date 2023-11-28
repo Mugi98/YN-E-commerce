@@ -18,7 +18,7 @@ const user = {
     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 };
 const navigation = [
-  { name: "Home", href: "#", current: true },
+  { name: "Home", href: "/", current: true },
   { name: "Product", href: "#", current: false },
   { name: "New Arrival", href: "#", current: false },
   { name: "Brand", href: "#", current: false },
@@ -26,7 +26,7 @@ const navigation = [
 const userNavigation = [
   { name: "Your Profile", link: "/profile" },
   { name: "My Orders", link: "/orders" },
-  { name: "Log out", link: "/login" },
+  { name: "Log out", link: "/logout" },
 ];
 
 function classNames(...classes) {

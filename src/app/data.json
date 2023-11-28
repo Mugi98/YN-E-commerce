@@ -2346,45 +2346,24 @@
           "city": "Thane",
           "state": "Maharashtra",
           "pincode": "400604"
-        },
-        {
-          "name": "Yash Nimbalkar 789",
-          "email": "yash@gmail.com",
-          "city": "Mumbai",
-          "state": "Maharashtra",
-          "pinCode": "400604",
-          "phone": "+919167661669",
-          "street": "Shree Nagar"
-        },
-        {
-          "name": "Yash Nimbalkar 89",
-          "email": "yash.nimbalkar@gmail.com",
-          "phone": "+919167661456",
-          "street": "Wagle Estate",
-          "city": "Pune",
-          "state": "Maharashtra",
-          "pinCode": "400634"
-        },
-        {
-          "name": "Yash Nimbalkar 69",
-          "email": "nimbalkar1998@gmail.com",
-          "phone": "+919167662346",
-          "street": "Shree  Estate",
-          "city": "Nashik",
-          "state": "Maharashtra",
-          "pinCode": "234567"
-        },
-        {
-          "name": "Yash Nimbalkar 98",
-          "email": "1998@gmail.com",
-          "phone": "+919145661669",
-          "street": "Nagar, Wagle ",
-          "city": "Thane",
-          "state": "Maharashtra",
-          "pinCode": "400678"
         }
       ],
       "id": 1
+    },
+    {
+      "email": "test@gmail.com",
+      "password": "Test@123",
+      "addresses": [
+        {
+          "name": "Yash Nimbalkar",
+          "phone": "+919167661669",
+          "street": "Shree Nagar, Wagle Estate",
+          "city": "Thane",
+          "state": "Maharashtra",
+          "pincode": "400604"
+        }
+      ],
+      "id": 2
     }
   ],
   "cart": [],
@@ -4006,6 +3985,235 @@
       },
       "status": "pending",
       "id": 18
+    },
+    {
+      "items": [],
+      "totalAmount": 0,
+      "totalItems": 0,
+      "user": {
+        "email": "yash.nimbalkar1998@gmail.com",
+        "password": "Test@123",
+        "addresses": [
+          {
+            "name": "Yash Nimbalkar",
+            "phone": "09167661669",
+            "street": "Shree Nagar, Wagle Estate",
+            "city": "Thane",
+            "state": "Maharashtra",
+            "pincode": "400604"
+          },
+          {
+            "name": "Yash Nimbalkar 789",
+            "email": "yash@gmail.com",
+            "city": "Mumbai",
+            "state": "Maharashtra",
+            "pinCode": "400604",
+            "phone": "+919167661669",
+            "street": "Shree Nagar"
+          },
+          {
+            "name": "Yash Nimbalkar 89",
+            "email": "yash.nimbalkar@gmail.com",
+            "phone": "+919167661456",
+            "street": "Wagle Estate",
+            "city": "Pune",
+            "state": "Maharashtra",
+            "pinCode": "400634"
+          },
+          {
+            "name": "Yash Nimbalkar 69",
+            "email": "nimbalkar1998@gmail.com",
+            "phone": "+919167662346",
+            "street": "Shree  Estate",
+            "city": "Nashik",
+            "state": "Maharashtra",
+            "pinCode": "234567"
+          },
+          {
+            "name": "Yash Nimbalkar 98",
+            "email": "1998@gmail.com",
+            "phone": "+919145661669",
+            "street": "Nagar, Wagle ",
+            "city": "Thane",
+            "state": "Maharashtra",
+            "pinCode": "400678"
+          },
+          {
+            "name": "Deom User",
+            "email": "Deomser@gmail.com",
+            "phone": "2323232323",
+            "street": "11th main",
+            "city": "Thane",
+            "state": "Maharashtra",
+            "pinCode": "400604"
+          }
+        ],
+        "id": 1
+      },
+      "paymentMethod": "card",
+      "selectedAddress": {
+        "name": "Deom User",
+        "email": "Deomser@gmail.com",
+        "phone": "2323232323",
+        "street": "11th main",
+        "city": "Thane",
+        "state": "Maharashtra",
+        "pinCode": "400604"
+      },
+      "status": "pending",
+      "id": 19
+    },
+    {
+      "items": [
+        {
+          "title": "OPPOF19",
+          "description": "OPPO F19 is officially announced on April 2021.",
+          "price": 280,
+          "discountPercentage": 17.91,
+          "rating": 4.3,
+          "stock": 123,
+          "brand": "OPPO",
+          "category": "smartphones",
+          "thumbnail": "https://i.dummyjson.com/data/products/4/thumbnail.jpg",
+          "images": [
+            "https://i.dummyjson.com/data/products/4/1.jpg",
+            "https://i.dummyjson.com/data/products/4/2.jpg",
+            "https://i.dummyjson.com/data/products/4/3.jpg",
+            "https://i.dummyjson.com/data/products/4/4.jpg",
+            "https://i.dummyjson.com/data/products/4/thumbnail.jpg"
+          ],
+          "quantity": 1,
+          "user": 1,
+          "id": 1
+        }
+      ],
+      "totalAmount": 280,
+      "totalItems": 1,
+      "user": {
+        "email": "yash.nimbalkar1998@gmail.com",
+        "password": "Test@123",
+        "addresses": [
+          {
+            "name": "Yash Nimbalkar",
+            "phone": "09167661669",
+            "street": "Shree Nagar, Wagle Estate",
+            "city": "Thane",
+            "state": "Maharashtra",
+            "pincode": "400604"
+          },
+          {
+            "name": "Yash Nimbalkar 789",
+            "email": "yash@gmail.com",
+            "city": "Mumbai",
+            "state": "Maharashtra",
+            "pinCode": "400604",
+            "phone": "+919167661669",
+            "street": "Shree Nagar"
+          },
+          {
+            "name": "Yash Nimbalkar 89",
+            "email": "yash.nimbalkar@gmail.com",
+            "phone": "+919167661456",
+            "street": "Wagle Estate",
+            "city": "Pune",
+            "state": "Maharashtra",
+            "pinCode": "400634"
+          },
+          {
+            "name": "Yash Nimbalkar 69",
+            "email": "nimbalkar1998@gmail.com",
+            "phone": "+919167662346",
+            "street": "Shree  Estate",
+            "city": "Nashik",
+            "state": "Maharashtra",
+            "pinCode": "234567"
+          },
+          {
+            "name": "Yash Nimbalkar 98",
+            "email": "1998@gmail.com",
+            "phone": "+919145661669",
+            "street": "Nagar, Wagle ",
+            "city": "Thane",
+            "state": "Maharashtra",
+            "pinCode": "400678"
+          },
+          {
+            "name": "Deom User",
+            "email": "Deomser@gmail.com",
+            "phone": "2323232323",
+            "street": "11th main",
+            "city": "Thane",
+            "state": "Maharashtra",
+            "pinCode": "400604"
+          }
+        ],
+        "id": 1
+      },
+      "paymentMethod": "card",
+      "selectedAddress": {
+        "name": "Deom User",
+        "email": "Deomser@gmail.com",
+        "phone": "2323232323",
+        "street": "11th main",
+        "city": "Thane",
+        "state": "Maharashtra",
+        "pinCode": "400604"
+      },
+      "status": "pending",
+      "id": 20
+    },
+    {
+      "items": [
+        {
+          "title": "iPhone 9",
+          "description": "An apple mobile which is nothing like apple",
+          "price": 549,
+          "discountPercentage": 12.96,
+          "rating": 4.69,
+          "stock": 94,
+          "brand": "Apple",
+          "category": "smartphones",
+          "thumbnail": "https://i.dummyjson.com/data/products/1/thumbnail.jpg",
+          "images": [
+            "https://i.dummyjson.com/data/products/1/1.jpg",
+            "https://i.dummyjson.com/data/products/1/2.jpg",
+            "https://i.dummyjson.com/data/products/1/3.jpg",
+            "https://i.dummyjson.com/data/products/1/4.jpg",
+            "https://i.dummyjson.com/data/products/1/thumbnail.jpg"
+          ],
+          "quantity": 1,
+          "user": 2,
+          "id": 1
+        }
+      ],
+      "totalAmount": 549,
+      "totalItems": 1,
+      "user": {
+        "email": "test@gmail.com",
+        "password": "Test@123",
+        "addresses": [
+          {
+            "name": "Yash Nimbalkar",
+            "phone": "+919167661669",
+            "street": "Shree Nagar, Wagle Estate",
+            "city": "Thane",
+            "state": "Maharashtra",
+            "pincode": "400604"
+          }
+        ],
+        "id": 2
+      },
+      "paymentMethod": "card",
+      "selectedAddress": {
+        "name": "Yash Nimbalkar",
+        "phone": "+919167661669",
+        "street": "Shree Nagar, Wagle Estate",
+        "city": "Thane",
+        "state": "Maharashtra",
+        "pincode": "400604"
+      },
+      "status": "pending",
+      "id": 21
     }
   ]
 }
