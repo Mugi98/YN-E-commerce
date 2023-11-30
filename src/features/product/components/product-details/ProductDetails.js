@@ -4,7 +4,7 @@ import { RadioGroup } from "@headlessui/react";
 import { fetchProductByIdAsync, selectProductById } from "../../ProductSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { addToCartAsync } from "../../../cart/cartSlice";
+import { addToCartAsync, selectItems } from "../../../cart/cartSlice";
 import { selectLoggedInUser } from "../../../auth/authSlice";
 
 const colors = [
@@ -31,15 +31,26 @@ export default function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const user = useSelector(selectLoggedInUser);
+  const items = useSelector(selectItems);
   const product = useSelector(selectProductById);
   const dispatch = useDispatch();
   const params = useParams();
 
   const handleCart = (e) => {
     e.preventDefault();
-    const newItem = { ...product, quantity: 1, user: user.id };
-    delete newItem["id"];
-    dispatch(addToCartAsync(newItem));
+    console.log(items, product, "ITEMS");
+    if (items.findIndex((item) => item.productId === product.id) < 0) {
+      const newItem = {
+        ...product,
+        productId: product.id,
+        quantity: 1,
+        user: user.id,
+      };
+      delete newItem["id"];
+      dispatch(addToCartAsync(newItem));
+    } else {
+      console.log("Already Added");
+    }
   };
 
   useEffect(() => {
