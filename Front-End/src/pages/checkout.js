@@ -7,15 +7,13 @@ import {
 } from "../features/cart/cartSlice";
 import { Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import {
-  selectLoggedInUser,
-  updateUserAsync,
-} from "../features/auth/authSlice";
 import { useState } from "react";
 import {
   createOrderAsync,
   selectCurrentOrder,
 } from "../features/order/orderSlice";
+import { discountedPrice } from "../common/constants";
+import { selectUserInfo, updateUserAsync } from "../features/user/userSlice";
 
 function Checkout() {
   const dispatch = useDispatch();
@@ -26,12 +24,12 @@ function Checkout() {
     formState: { errors },
   } = useForm();
 
-  const user = useSelector(selectLoggedInUser);
+  const user = useSelector(selectUserInfo);
   const items = useSelector(selectItems);
   const orderPlaced = useSelector(selectCurrentOrder);
 
   const totalAmount = items.reduce(
-    (amount, item) => item.price * item.quantity + amount,
+    (amount, item) => discountedPrice(item.product) * item.quantity + amount,
     0
   );
   const totalItems = items.reduce((total, item) => item.quantity + total, 0);
@@ -39,15 +37,15 @@ function Checkout() {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("cash");
 
-  const totalDiscountedPrice = items.reduce((total, items) => {
-    const discountedAmount = (items.discountPercentage / 100) * items.price;
-    return Math.round(total + (items.price - discountedAmount));
-  }, 0);
+  // const totalDiscountedPrice = items.reduce((total, itemsproduct) => {
+  //   const discountedAmount = (items.discountPercentage / 100) * items.price;
+  //   return Math.round(total + (items.price - discountedAmount));
+  // }, 0);
 
-  const eighteenPercent = Math.round((18 / 100) * totalDiscountedPrice);
+  const eighteenPercent = Math.round((18 / 100) * totalAmount);
 
   const handleQuantity = (e, item) => {
-    dispatch(updateCartAsync({ ...item, quantity: +e.target.value }));
+    dispatch(updateCartAsync({ id: item.id, quantity: +e.target.value }));
   };
 
   const handleRemove = (e, id) => {
@@ -55,6 +53,7 @@ function Checkout() {
   };
 
   const handleAddress = (e) => {
+    console.log(user, "USER");
     setSelectedAddress(user.addresses[e.target.value]);
   };
 
@@ -67,7 +66,7 @@ function Checkout() {
       items,
       totalAmount,
       totalItems,
-      user,
+      user: user.id,
       paymentMethod,
       selectedAddress,
       status: "pending",
@@ -77,11 +76,14 @@ function Checkout() {
 
   return (
     <>
-      {orderPlaced && (
+      {orderPlaced && orderPlaced.paymentMethod === "cash" && (
         <Navigate
           to={`/order-confirmation/${orderPlaced.id}`}
           replace={true}
         ></Navigate>
+      )}
+      {orderPlaced && orderPlaced.paymentMethod === "card" && (
+        <Navigate to={`/stripe-checkout/`} replace={true}></Navigate>
       )}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
@@ -269,11 +271,14 @@ function Checkout() {
                   <p className="mt-1 text-sm leading-6 text-gray-600">
                     Choose from Existing addresses
                   </p>
-                  <ul role="list">
+                  <div
+                    className="grid grid-rows-4 grid-flow-col gap-4"
+                    role="list"
+                  >
                     {user.addresses.map((address, index) => (
-                      <li
+                      <div
                         key={index}
-                        className="flex justify-between gap-x-6 px-5 py-5 border-solid border-2 border-gray-200"
+                        className="flex mx-6 my-6 justify-between gap-x-6 px-5 py-5 border-solid border-2 border-gray-200"
                       >
                         <div className="flex gap-x-4">
                           <input
@@ -284,28 +289,29 @@ function Checkout() {
                             className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                           />
                           <div className="min-w-0 flex-auto">
-                            <p className="text-sm font-semibold leading-6 text-gray-900">
+                            <p className="text-sm font-semibold leading-6 break-words text-gray-900">
                               {address.name}
                             </p>
-                            <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                            <p className="mt-1 truncate text-xs leading-5 break-words text-gray-500">
                               {address.street}
                             </p>
-                            <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                            <p className="mt-1 truncate text-xs leading-5 break-words text-gray-500">
+                              {address.city}
+                            </p>
+                            <p className="mt-1 truncate text-xs leading-5 break-words text-gray-500">
+                              {address.state}
+                            </p>
+                            <p className="mt-1 truncate text-xs leading-5 break-words text-gray-500">
                               {address.pinCode}
+                            </p>
+                            <p className="mt-1 truncate text-xs leading-5 break-words text-gray-500">
+                              Phone: {address.phone}
                             </p>
                           </div>
                         </div>
-                        <div className="hidden sm:flex sm:flex-col sm:items-end">
-                          <p className="text-sm leading-6 text-gray-900">
-                            Phone: {address.phone}
-                          </p>
-                          <p className="text-sm leading-6 text-gray-500">
-                            {address.city}
-                          </p>
-                        </div>
-                      </li>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
 
                   <div className="mt-10 space-y-10">
                     <fieldset>
@@ -369,8 +375,8 @@ function Checkout() {
                       <li key={item.id} className="flex py-6">
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                           <img
-                            src={item.thumbnail}
-                            alt={item.title}
+                            src={item.product.thumbnail}
+                            alt={item.product.title}
                             className="h-full w-full object-cover object-center"
                           />
                         </div>
@@ -379,17 +385,20 @@ function Checkout() {
                           <div>
                             <div className="flex justify-between text-base font-medium text-gray-900">
                               <h3>
-                                <a href={item.href}>{item.title}</a>
+                                <a href={item.product.id}>
+                                  {item.product.title}
+                                </a>
                               </h3>
                               <div>
                                 <p className="ml-4 line-through text-gray-500">
-                                  ${item?.price}
+                                  ${item?.product?.price}
                                 </p>
                                 <p className="ml-4">
                                   $
                                   {Math.round(
-                                    item?.price *
-                                      (1 - item?.discountPercentage / 100)
+                                    item?.product.price *
+                                      (1 -
+                                        item?.product.discountPercentage / 100)
                                   )}
                                 </p>
                               </div>
@@ -440,10 +449,10 @@ function Checkout() {
                   <p>Subtotal</p>
                   <p>$ {totalAmount}</p>
                 </div>
-                <div className="flex justify-between my-2 text-base font-medium text-gray-900">
+                {/* <div className="flex justify-between my-2 text-base font-medium text-gray-900">
                   <p>Your Saving</p>
                   <p className="text-green-500">${totalDiscountedPrice}</p>
-                </div>
+                </div> */}
                 <div className="flex justify-between my-2 text-base font-medium text-gray-900">
                   <p>Shipping</p>
                   <p className="text-green-500">FREE</p>
@@ -454,7 +463,7 @@ function Checkout() {
                 </div>
                 <div className="flex justify-between my-2 text-base font-medium text-gray-900">
                   <p>Total</p>
-                  <p>${totalAmount - totalDiscountedPrice + eighteenPercent}</p>
+                  <p>${totalAmount + eighteenPercent}</p>
                 </div>
                 <p className="mt-0.5 text-sm text-gray-500">
                   Shipping and taxes calculated at checkout.

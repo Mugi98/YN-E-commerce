@@ -11,7 +11,6 @@ exports.fetchCategories = async (req, res) => {
 
 exports.createCategory = async (req, res) => {
   const category = new Category(req.body);
-  console.log(category);
   try {
     const response = await category.save();
     res.status(201).json(response);

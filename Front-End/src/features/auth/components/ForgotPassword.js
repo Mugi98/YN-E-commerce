@@ -1,7 +1,5 @@
-import { useSelector, useDispatch } from "react-redux";
-import { selectError, selectLoggedInUser } from "../authSlice";
-import { Link, Navigate } from "react-router-dom";
-import { checkUserAsync } from "../authSlice";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import logo from "../../../Y-N E-commerce.jpg";
 

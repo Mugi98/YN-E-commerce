@@ -7,32 +7,26 @@ import { Link, Navigate } from "react-router-dom";
 import {
   deleteItemFromCartAsync,
   selectItems,
+  selectcartLoaded,
   updateCartAsync,
 } from "./cartSlice";
+import { discountedPrice } from "../../common/constants";
 
 export default function Cart() {
   const items = useSelector(selectItems);
+  const cartLoaded = useSelector(selectcartLoaded);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(true);
 
-  const totalDiscountedPrice = items.reduce((total, items) => {
-    const discountedAmount = (items.discountPercentage / 100) * items.price;
-    return Math.round(total + (items.price - discountedAmount));
-  }, 0);
-
   const totalAmount = items.reduce(
-    (amount, item) => item.price * item.quantity + amount,
-    0
-  );
-  const totalItems = items.reduce(
-    (quantity, item) => item.quantity + quantity,
+    (amount, item) => discountedPrice(item.product) * item.quantity + amount,
     0
   );
 
   const handleQuantity = (e, item) => {
     dispatch(
       updateCartAsync({
-        ...item,
+        id: item.id,
         quantity: +e.target.value,
       })
     );
@@ -43,7 +37,9 @@ export default function Cart() {
 
   return (
     <>
-      {!items.length && <Navigate to="/" replace={true}></Navigate>}
+      {!items.length && cartLoaded && (
+        <Navigate to="/" replace={true}></Navigate>
+      )}
       <div className="mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8 bg-white shadow">
         <h1 className="text-4xl font-bold tracking-tight text-gray-900 py-4">
           Shopping Cart
@@ -52,11 +48,11 @@ export default function Cart() {
           <div className="flow-root">
             <ul role="list" className="-my-6 divide-y divide-gray-200">
               {items.map((item) => (
-                <li key={item.id} className="flex py-6">
+                <li key={item.product.id} className="flex py-6">
                   <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                     <img
-                      src={item.thumbnail}
-                      alt={item.title}
+                      src={item.product.thumbnail}
+                      alt={item.product.title}
                       className="h-full w-full object-cover object-center"
                     />
                   </div>
@@ -65,21 +61,24 @@ export default function Cart() {
                     <div>
                       <div className="flex justify-between text-base font-medium text-gray-900">
                         <h3>
-                          <a href={item.id}>{item.title}</a>
+                          <a href={item.product.id}>{item.product.title}</a>
                         </h3>
                         <div>
                           <p className="ml-4 line-through text-gray-500">
-                            ${item?.price}
+                            ${item.product.price}
                           </p>
                           <p className="ml-4">
                             $
                             {Math.round(
-                              item?.price * (1 - item?.discountPercentage / 100)
+                              item.product?.price *
+                                (1 - item.product?.discountPercentage / 100)
                             )}
                           </p>
                         </div>
                       </div>
-                      <p className="mt-1 text-sm text-gray-500">{item.brand}</p>
+                      <p className="mt-1 text-sm text-gray-500">
+                        {item.product.brand}
+                      </p>
                     </div>
                     <div className="flex flex-1 items-end justify-between text-sm">
                       <div className="text-gray-500">
@@ -104,7 +103,7 @@ export default function Cart() {
 
                       <div className="flex">
                         <button
-                          onClick={(e) => handleRemove(e, item.id)}
+                          onClick={(e) => handleRemove(e, item.product.id)}
                           type="button"
                           className="font-medium text-indigo-600 hover:text-indigo-500"
                         >
@@ -124,13 +123,13 @@ export default function Cart() {
             <p>Subtotal</p>
             <p>${totalAmount}</p>
           </div>
-          <div className="flex justify-between my-2 text-base font-medium text-gray-900">
+          {/* <div className="flex justify-between my-2 text-base font-medium text-gray-900">
             <p>Your Saving</p>
             <p className="text-green-500">${totalDiscountedPrice}</p>
-          </div>
+          </div> */}
           <div className="flex justify-between my-2 text-base font-medium text-gray-900">
             <p>Total</p>
-            <p>${totalAmount - totalDiscountedPrice}</p>
+            <p>${totalAmount}</p>
           </div>
           <p className="mt-0.5 text-sm text-gray-500">
             Shipping and taxes calculated at checkout.

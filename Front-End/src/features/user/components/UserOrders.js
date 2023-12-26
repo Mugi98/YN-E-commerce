@@ -8,12 +8,41 @@ import {
 
 export default function UserOrders() {
   const dispatch = useDispatch();
-  const user = useSelector(selectUserInfo);
   const orders = useSelector(selectUserOrders);
 
+  const checkStatus = (status) => {
+    switch (status) {
+      case "pending":
+        return 1;
+      case "dispatched":
+        return 2;
+      case "delivered":
+        return 3;
+      case "cancelled":
+        return 4;
+      default:
+        return 1;
+    }
+  };
+
+  const chooseColor = (status) => {
+    switch (status) {
+      case "pending":
+        return "text-purple-600";
+      case "dispatched":
+        return "text-yellow-600";
+      case "delivered":
+        return "text-green-600";
+      case "cancelled":
+        return "text-red-600";
+      default:
+        return "text-purple-600";
+    }
+  };
+
   useEffect(() => {
-    dispatch(fetchLoggedInUserOrderAsync(user.id));
-  }, []);
+    dispatch(fetchLoggedInUserOrderAsync());
+  }, [dispatch]);
 
   return (
     <div>
@@ -26,19 +55,170 @@ export default function UserOrders() {
                   onClick={() => console.log(order)}
                   className="text-4xl my-5 font-bold tracking-tight text-gray-900"
                 >
-                  {/* Order # {order?.id} */}
+                  Order # {order?.id}
                 </h1>
-                <h3 className="text-xl my-5 font-bold tracking-tight text-red-900">
+                <h3
+                  className={`${chooseColor(
+                    order?.status
+                  )} text-xl my-5 font-bold tracking-tight`}
+                >
                   Order Status : {order?.status}
                 </h3>
+                <ol class="my-9 flex items-center w-full">
+                  <li class="flex w-full items-center text-blue-600 dark:text-blue-500 after:content-[''] after:w-full after:h-1 after:border-b after:border-blue-100 after:border-4 after:inline-block dark:after:border-blue-800">
+                    {checkStatus(order?.status) >= 1 ? (
+                      <span class="flex items-center justify-center w-10 h-10 bg-green-700 rounded-full lg:h-12 lg:w-12 dark:bg-green-700 shrink-0">
+                        <svg
+                          class="w-3.5 h-3.5 text-white dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 16 12"
+                        >
+                          <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M1 5.917 5.724 10.5 15 1.5"
+                          />
+                        </svg>
+                      </span>
+                    ) : (
+                      <span class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 dark:bg-blue-800 shrink-0">
+                        <svg
+                          class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 18 20"
+                        >
+                          <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2ZM7 2h4v3H7V2Zm5.7 8.289-3.975 3.857a1 1 0 0 1-1.393 0L5.3 12.182a1.002 1.002 0 1 1 1.4-1.436l1.328 1.289 3.28-3.181a1 1 0 1 1 1.392 1.435Z" />
+                        </svg>
+                      </span>
+                    )}
+                  </li>
+                  <li class="flex w-full items-center text-blue-600 dark:text-blue-500 after:content-[''] after:w-full after:h-1 after:border-b after:border-blue-100 after:border-4 after:inline-block dark:after:border-blue-800">
+                    {checkStatus(order?.status) >= 2 ? (
+                      <span class="flex items-center justify-center w-10 h-10 bg-green-700 rounded-full lg:h-12 lg:w-12 dark:bg-green-700 shrink-0">
+                        <svg
+                          class="w-3.5 h-3.5 text-white dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 16 12"
+                        >
+                          <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M1 5.917 5.724 10.5 15 1.5"
+                          />
+                        </svg>
+                      </span>
+                    ) : (
+                      <span class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 dark:bg-blue-800 shrink-0">
+                        <svg
+                          class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 21 20"
+                        >
+                          <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="m8.806 5.614-4.251.362-2.244 2.243a1.058 1.058 0 0 0 .6 1.8l3.036.356m9.439 1.819-.362 4.25-2.243 2.245a1.059 1.059 0 0 1-1.795-.6l-.449-2.983m9.187-12.57a1.536 1.536 0 0 0-1.26-1.26c-1.818-.313-5.52-.7-7.179.96-1.88 1.88-5.863 9.016-7.1 11.275a1.05 1.05 0 0 0 .183 1.25l.932.939.937.936a1.049 1.049 0 0 0 1.25.183c2.259-1.24 9.394-5.222 11.275-7.1 1.66-1.663 1.275-5.365.962-7.183Zm-3.332 4.187a2.115 2.115 0 1 1-4.23 0 2.115 2.115 0 0 1 4.23 0Z"
+                          />
+                        </svg>
+                      </span>
+                    )}
+                  </li>
+                  <li class="flex w-full items-center text-blue-600 dark:text-blue-500 after:content-[''] after:w-full after:h-1 after:border-b after:border-blue-100 after:border-4 after:inline-block dark:after:border-blue-800">
+                    {checkStatus(order?.status) >= 3 ? (
+                      <span class="flex items-center justify-center w-10 h-10 bg-green-700 rounded-full lg:h-12 lg:w-12 dark:bg-green-700 shrink-0">
+                        <svg
+                          class="w-3.5 h-3.5 text-white dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 16 12"
+                        >
+                          <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M1 5.917 5.724 10.5 15 1.5"
+                          />
+                        </svg>
+                      </span>
+                    ) : (
+                      <span class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 dark:bg-blue-800 shrink-0">
+                        <svg
+                          class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 20 19"
+                        >
+                          <path d="M10.013 4.175 5.006 7.369l5.007 3.194-5.007 3.193L0 10.545l5.006-3.193L0 4.175 5.006.981l5.007 3.194ZM4.981 15.806l5.006-3.193 5.006 3.193L9.987 19l-5.006-3.194Z" />
+                          <path d="m10.013 10.545 5.006-3.194-5.006-3.176 4.98-3.194L20 4.175l-5.007 3.194L20 10.562l-5.007 3.194-4.98-3.211Z" />
+                        </svg>
+                      </span>
+                    )}
+                  </li>
+                  <li class="flex items-center w-full">
+                    {order?.status === "cancelled" ? (
+                      <span class="flex items-center justify-center w-10 h-10 bg-red-700 rounded-full lg:h-12 lg:w-12 dark:bg-red-700 shrink-0">
+                        <svg
+                          class="w-3.5 h-3.5 text-white dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 16 12"
+                        >
+                          <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M1 5.917 5.724 10.5 15 1.5"
+                          />
+                        </svg>
+                      </span>
+                    ) : (
+                      <span class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 dark:bg-blue-800 shrink-0">
+                        <svg
+                          class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 14"
+                        >
+                          <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                          />
+                        </svg>
+                      </span>
+                    )}
+                  </li>
+                </ol>
                 <div className="flow-root">
                   <ul role="list" className="-my-6 divide-y divide-gray-200">
                     {order?.items?.map((item) => (
-                      <li key={item.id} className="flex py-6">
+                      <li key={item.product.id} className="flex py-6">
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                           <img
-                            src={item.thumbnail}
-                            alt={item.title}
+                            src={item.product.thumbnail}
+                            alt={item.product.title}
                             className="h-full w-full object-cover object-center"
                           />
                         </div>
@@ -47,12 +227,14 @@ export default function UserOrders() {
                           <div>
                             <div className="flex justify-between text-base font-medium text-gray-900">
                               <h3>
-                                <a href={item.href}>{item.title}</a>
+                                <a href={item.product.id}>
+                                  {item.product.title}
+                                </a>
                               </h3>
-                              <p className="ml-4">${item.price}</p>
+                              <p className="ml-4">${item.product.price}</p>
                             </div>
                             <p className="mt-1 text-sm text-gray-500">
-                              {item.brand}
+                              {item.product.brand}
                             </p>
                           </div>
                           <div className="flex flex-1 items-end justify-between text-sm">

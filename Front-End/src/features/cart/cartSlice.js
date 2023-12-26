@@ -10,6 +10,7 @@ import {
 const initialState = {
   status: "idle",
   items: [],
+  cartLoaded: false,
 };
 
 export const addToCartAsync = createAsyncThunk(
@@ -23,8 +24,8 @@ export const addToCartAsync = createAsyncThunk(
 
 export const fetchItemsByUserIdAsync = createAsyncThunk(
   "cart/fetchItemsByUserId",
-  async (userId) => {
-    const response = await fetchItemsByUserId(userId);
+  async () => {
+    const response = await fetchItemsByUserId();
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
@@ -47,14 +48,11 @@ export const deleteItemFromCartAsync = createAsyncThunk(
     return response.data;
   }
 );
-export const resetCartAsync = createAsyncThunk(
-  "cart/resetCart",
-  async (userId) => {
-    const response = await resetCart(userId);
-    // The value we return becomes the `fulfilled` action payload
-    return response.data;
-  }
-);
+export const resetCartAsync = createAsyncThunk("cart/resetCart", async () => {
+  const response = await resetCart();
+  // The value we return becomes the `fulfilled` action payload
+  return response.data;
+});
 
 export const counterSlice = createSlice({
   name: "cart",
@@ -79,6 +77,12 @@ export const counterSlice = createSlice({
       .addCase(fetchItemsByUserIdAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.items = action.payload;
+        state.cartLoaded = true;
+      })
+      .addCase(fetchItemsByUserIdAsync.rejected, (state, action) => {
+        state.status = "idle";
+        state.items = action.payload;
+        state.cartLoaded = true;
       })
       .addCase(updateCartAsync.pending, (state) => {
         state.status = "loading";
@@ -113,5 +117,7 @@ export const counterSlice = createSlice({
 export const { increment } = counterSlice.actions;
 
 export const selectItems = (state) => state.cart.items;
+export const selectCartStatus = (state) => state.cart.status;
+export const selectcartLoaded = (state) => state.cart.cartLoaded;
 
 export default counterSlice.reducer;

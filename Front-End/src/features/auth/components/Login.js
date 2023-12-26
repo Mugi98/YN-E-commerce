@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { selectError, selectLoggedInUser } from "../authSlice";
 import { Link, Navigate } from "react-router-dom";
-import { checkUserAsync } from "../authSlice";
+import { loginUserAsync } from "../authSlice";
 import { useForm } from "react-hook-form";
 import logo from "../../../Y-N E-commerce.jpg";
 
@@ -31,12 +31,12 @@ export default function Login() {
             </h2>
           </div>
 
-          <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+          <div className="mt-10 mb-10 sm:mx-auto sm:w-full sm:max-w-sm">
             <form
               noValidate
               onSubmit={handleSubmit((data) => {
                 dispatch(
-                  checkUserAsync({ email: data.email, password: data.password })
+                  loginUserAsync({ email: data.email, password: data.password })
                 );
               })}
               className="space-y-6"
@@ -54,6 +54,7 @@ export default function Login() {
                     {...register("email", {
                       required: "email is required",
                       pattern: {
+                        // eslint-disable-next-line
                         value: /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi,
                         message: "email not valid",
                       },
