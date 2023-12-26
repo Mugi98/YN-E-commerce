@@ -27,7 +27,6 @@ import AdminProductListPage from "./pages/AdminProductListPage";
 import AdminProductDetailsPage from "./pages/AdminProductDetailsPage";
 import AdminProductFormPage from "./pages/AdminProductFormPage";
 import AdminOrdersPage from "./pages/AdminOrdersPage";
-import StripeCheckout from "./pages/StripeCheckout";
 
 const router = createBrowserRouter([
   {
@@ -102,14 +101,14 @@ const router = createBrowserRouter([
       </Protected>
     ),
   },
-  {
-    path: "/stripe-checkout/",
-    element: (
-      <Protected>
-        <StripeCheckout />
-      </Protected>
-    ),
-  },
+  // {
+  //   path: "/stripe-checkout/",
+  //   element: (
+  //     <Protected>
+  //       <StripeCheckout />
+  //     </Protected>
+  //   ),
+  // },
   {
     path: "/product-detail/:id",
     element: (

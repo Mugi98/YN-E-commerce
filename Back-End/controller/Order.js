@@ -1,5 +1,6 @@
 const { Cart } = require("../model/cart");
 const { Order } = require("../model/order");
+const axios = require("axios");
 
 exports.fetchAllOrders = async (req, res) => {
   let condition = {};
@@ -34,10 +35,34 @@ exports.fetchAllOrders = async (req, res) => {
 exports.fetchOrderByUser = async (req, res) => {
   const { id } = req.user;
   try {
-    const orders = await Order.find({ user: id });
+    const orders = await Order.find({ user: id }).populate("paymentByCard");
     res.status(200).json(orders);
   } catch (error) {
     res.status(400).json(error);
+  }
+};
+
+exports.fetchUserPaymentDetails = async (req, res) => {
+  const paymentId = req.params.id;
+  const key = process.env.KEY;
+  const secret = process.env.SECRET;
+  const credentials = `${key}:${secret}`;
+  const base64Credentials = Buffer.from(credentials).toString("base64");
+
+  const headers = {
+    Authorization: `Basic ${base64Credentials}`,
+  };
+  console.log(paymentId, "PAYMENTID");
+  const apiUrl = `https://api.razorpay.com/v1/payments/${paymentId}`;
+
+  try {
+    const response = await axios.get(apiUrl, { headers });
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    res.status(400).json({ error: "Internal Server Error" });
+    // Optionally, you might choose to throw the error to stop further execution
+    // throw error;
   }
 };
 

@@ -1,11 +1,10 @@
-import { useDispatch, useSelector } from "react-redux";
-import { resetOrder, selectOrderSuccess } from "../features/order/orderSlice";
+import { useDispatch } from "react-redux";
+import { resetOrder } from "../features/order/orderSlice";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { resetCartAsync } from "../features/cart/cartSlice";
 import { useEffect } from "react";
 
 function OrderSuccessPage() {
-  const orderPlaced = useSelector(selectOrderSuccess);
   const dispatch = useDispatch();
   const params = useParams();
 

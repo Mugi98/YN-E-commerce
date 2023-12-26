@@ -1,14 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchLoggedInUserOrderAsync,
-  selectUserInfo,
   selectUserOrders,
+  fetchUserPaymentDetailsAsync,
+  selectPaymentDeatils,
 } from "../userSlice";
 
 export default function UserOrders() {
   const dispatch = useDispatch();
+  const [paymentId, setPaymentId] = useState("");
   const orders = useSelector(selectUserOrders);
+  const cardDetails = useSelector(selectPaymentDeatils);
 
   const checkStatus = (status) => {
     switch (status) {
@@ -40,9 +43,14 @@ export default function UserOrders() {
     }
   };
 
+  const handleCardPayment = async (paymentID) => {
+    setPaymentId(paymentID);
+  };
+
   useEffect(() => {
+    dispatch(fetchUserPaymentDetailsAsync(paymentId));
     dispatch(fetchLoggedInUserOrderAsync());
-  }, [dispatch]);
+  }, [dispatch, paymentId]);
 
   return (
     <div>
@@ -296,10 +304,8 @@ export default function UserOrders() {
                     </div>
                   </div>
                   <div>
-                    <p className="my-2 text-base font-medium text-gray-900">
-                      Payment Method :
-                    </p>
-                    <p className="text-sm font-semibold leading-6 text-gray-900">
+                    <p className="flex my-2 text-base gap-2 font-medium text-gray-900">
+                      Payment Method
                       {order?.paymentMethod === "cash" ? (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -332,6 +338,54 @@ export default function UserOrders() {
                           />
                           CARD
                         </svg>
+                      )}
+                    </p>
+                    <p className="text-sm font-semibold leading-6 text-gray-900">
+                      {order?.paymentMethod === "card" ? (
+                        <div>
+                          {order?.paymentByCard?.razorpay_payment_id && (
+                            <div>
+                              Payment ID:-
+                              {order?.paymentByCard?.razorpay_payment_id}
+                            </div>
+                          )}
+                          {cardDetails?.card && (
+                            <div>
+                              Card Network:-
+                              <a
+                                href="https://www.flaticon.com/free-icons/visa"
+                                title="visa icons"
+                              ></a>
+                              {cardDetails?.card?.network}
+                            </div>
+                          )}
+                          {cardDetails?.card && (
+                            <div>
+                              Card Number:- **** **** ****{" "}
+                              {cardDetails?.card?.last4}
+                            </div>
+                          )}
+                          {cardDetails?.card && (
+                            <div>
+                              Card Type:-
+                              {cardDetails?.card?.type}
+                            </div>
+                          )}
+                          <div className="flex justify-center">
+                            <button
+                              className="mt-10 flex w-1/2 items-center justify-center rounded-md border border-transparent bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                              onClick={() =>
+                                handleCardPayment(
+                                  order?.paymentByCard?.razorpay_payment_id
+                                )
+                              }
+                            >
+                              Show Card
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <></>
                       )}
                     </p>
                   </div>

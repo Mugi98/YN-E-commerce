@@ -2,14 +2,15 @@ const express = require("express");
 const server = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
+const dotenv = require("dotenv");
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const JwtStrategy = require("passport-jwt").Strategy;
 const cookieParser = require("cookie-parser");
-// const bodyParser = require("body-parser");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+dotenv.config();
 
 const productsRouter = require("./routes/Products");
 const brandRouter = require("./routes/Brands");
@@ -18,22 +19,25 @@ const userRouter = require("./routes/User");
 const authRouter = require("./routes/Auth");
 const cartRouter = require("./routes/Cart");
 const orderRouter = require("./routes/Order");
+const paymentRouter = require("./routes/Payment");
 
 const { User } = require("./model/user");
 const { isAuth, santitizeUser, cookieExtractor } = require("./services/common");
 
 const SECRET_KEY = "SECRET_KEY";
-const stripe = require("stripe")(
-  "sk_test_51OQuAgSBxJ90nxsuZyC5OACPciyOz1GfVhCEF8hI3YGAA3a6fNd94gUeGG2Y9lU8KJTmIoGBgruEn5wKkAsKuzVV009jEKVrK9"
-);
+// const stripe = require("stripe")(
+//   "sk_test_51OQuAgSBxJ90nxsuZyC5OACPciyOz1GfVhCEF8hI3YGAA3a6fNd94gUeGG2Y9lU8KJTmIoGBgruEn5wKkAsKuzVV009jEKVrK9"
+// );
 
 const opts = {};
 opts.jwtFromRequest = cookieExtractor;
 opts.secretOrKey = SECRET_KEY;
 
+server.use(express.json());
+server.use(cors());
+server.use(cors({ exposedHeaders: ["X-Total-Count"] }));
 server.use(express.static("build"));
 server.use(cookieParser());
-server.use(express.json());
 server.use(
   session({
     secret: "keyboard cat",
@@ -42,7 +46,6 @@ server.use(
   })
 );
 server.use(passport.authenticate("session"));
-server.use(cors({ exposedHeaders: ["X-Total-Count"] }));
 
 server.use("/products", isAuth(), productsRouter.router);
 server.use("/categories", isAuth(), categoriesRouter.router);
@@ -51,6 +54,7 @@ server.use("/users", isAuth(), userRouter.router);
 server.use("/auth", authRouter.router);
 server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), orderRouter.router);
+server.use("/payment", isAuth(), paymentRouter.router);
 
 passport.use(
   "local",
@@ -114,23 +118,6 @@ passport.deserializeUser(async function (user, cb) {
 });
 
 // Payments
-
-server.post("/create-payment-intent", async (req, res) => {
-  const { totalAmount } = req.body;
-
-  // Create a PaymentIntent with the order amount and currency
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: totalAmount,
-    currency: "inr",
-    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
-    automatic_payment_methods: {
-      enabled: true,
-    },
-  });
-  res.send({
-    clientSecret: paymentIntent.client_secret,
-  });
-});
 
 main().catch((err) => console.log(err));
 

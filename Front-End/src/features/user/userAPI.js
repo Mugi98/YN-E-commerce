@@ -14,6 +14,14 @@ export function fetchLoggedInUser() {
     resolve({ data });
   });
 }
+export function fetchUserPaymentDetails(paymentID) {
+  return new Promise(async (resolve) => {
+    const response = await fetch("http://localhost:8080/orders/" + paymentID);
+    console.log(response);
+    const data = await response.json();
+    resolve({ data });
+  });
+}
 
 export function updateUser(update) {
   return new Promise(async (resolve) => {

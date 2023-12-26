@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import {
   deleteItemFromCartAsync,
@@ -23,12 +24,11 @@ function Checkout() {
     reset,
     formState: { errors },
   } = useForm();
-
   const user = useSelector(selectUserInfo);
   const items = useSelector(selectItems);
   const orderPlaced = useSelector(selectCurrentOrder);
 
-  const totalAmount = items.reduce(
+  const subTotalAmount = items.reduce(
     (amount, item) => discountedPrice(item.product) * item.quantity + amount,
     0
   );
@@ -37,12 +37,8 @@ function Checkout() {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("cash");
 
-  // const totalDiscountedPrice = items.reduce((total, itemsproduct) => {
-  //   const discountedAmount = (items.discountPercentage / 100) * items.price;
-  //   return Math.round(total + (items.price - discountedAmount));
-  // }, 0);
-
-  const eighteenPercent = Math.round((18 / 100) * totalAmount);
+  const eighteenPercent = Math.round((18 / 100) * subTotalAmount);
+  const totalAmount = subTotalAmount + eighteenPercent;
 
   const handleQuantity = (e, item) => {
     dispatch(updateCartAsync({ id: item.id, quantity: +e.target.value }));
@@ -61,6 +57,60 @@ function Checkout() {
     setPaymentMethod(e.target.value);
   };
 
+  const checkouthandler = async () => {
+    const {
+      data: { key },
+    } = await axios.get("http://localhost:8080/payment/getkey");
+    const {
+      data: { order },
+    } = await axios.post("http://localhost:8080/payment/checkout", {
+      totalAmount,
+    });
+    console.log(order, "ORDER");
+    const options = {
+      key,
+      amount: order.amount,
+      currency: "INR",
+      name: "YN Ecommerce",
+      description: "YN Ecommerce",
+      image: "https://avatars.githubusercontent.com/u/96648429?s=96&v=4",
+      order_id: order.id,
+      handler: async (response) => {
+        try {
+          const verifyUrl = "http://localhost:8080/payment/paymentverification";
+          const { data } = await axios.post(verifyUrl, response);
+          console.log(data, "REsponse");
+          const order = {
+            items,
+            totalAmount,
+            totalItems,
+            user: user.id,
+            paymentMethod,
+            paymentByCard: data.response._id,
+            selectedAddress,
+            status: "pending",
+          };
+          dispatch(createOrderAsync(order));
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      prefill: {
+        name: "Yash Nimbalkar",
+        email: "yash.nimbalkar1998@gmail.com",
+        contact: "9167661669",
+      },
+      notes: {
+        address: "razorapy official",
+      },
+      theme: {
+        color: "#121212",
+      },
+    };
+    const razor = new window.Razorpay(options);
+    razor.open();
+  };
+
   const handleOrder = (e) => {
     const order = {
       items,
@@ -76,14 +126,11 @@ function Checkout() {
 
   return (
     <>
-      {orderPlaced && orderPlaced.paymentMethod === "cash" && (
+      {orderPlaced && (
         <Navigate
           to={`/order-confirmation/${orderPlaced.id}`}
           replace={true}
         ></Navigate>
-      )}
-      {orderPlaced && orderPlaced.paymentMethod === "card" && (
-        <Navigate to={`/stripe-checkout/`} replace={true}></Navigate>
       )}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
@@ -275,7 +322,7 @@ function Checkout() {
                     className="grid grid-rows-4 grid-flow-col gap-4"
                     role="list"
                   >
-                    {user.addresses.map((address, index) => (
+                    {user?.addresses?.map((address, index) => (
                       <div
                         key={index}
                         className="flex mx-6 my-6 justify-between gap-x-6 px-5 py-5 border-solid border-2 border-gray-200"
@@ -447,7 +494,7 @@ function Checkout() {
               <div className="border-t border-gray-200 px-2 py-6 sm:px-2">
                 <div className="flex justify-between my-2 text-base font-medium text-gray-900">
                   <p>Subtotal</p>
-                  <p>$ {totalAmount}</p>
+                  <p>$ {subTotalAmount}</p>
                 </div>
                 {/* <div className="flex justify-between my-2 text-base font-medium text-gray-900">
                   <p>Your Saving</p>
@@ -459,18 +506,20 @@ function Checkout() {
                 </div>
                 <div className="flex border-b border-gray-200 justify-between pb-6 my-2 text-base font-medium text-gray-900">
                   <p>Taxes</p>
-                  <p className="">{eighteenPercent}</p>
+                  <p className="">${eighteenPercent}</p>
                 </div>
                 <div className="flex justify-between my-2 text-base font-medium text-gray-900">
                   <p>Total</p>
-                  <p>${totalAmount + eighteenPercent}</p>
+                  <p>${totalAmount}</p>
                 </div>
                 <p className="mt-0.5 text-sm text-gray-500">
                   Shipping and taxes calculated at checkout.
                 </p>
                 <div className="mt-6">
                   <div
-                    onClick={handleOrder}
+                    onClick={
+                      paymentMethod === "cash" ? handleOrder : checkouthandler
+                    }
                     className="flex cursor-pointer items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                   >
                     Order Now
