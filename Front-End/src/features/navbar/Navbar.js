@@ -5,7 +5,7 @@ import {
   ShoppingCartIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import logo from "../../Y-N E-commerce.jpg";
+import logo from "../../assests/Y-N E-commerce.jpg";
 import "./index.css";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";

@@ -42,7 +42,6 @@ function AdminOrders() {
 
   const handleSort = (sortOption) => {
     const sort = { _sort: sortOption.sort, _order: sortOption.order };
-    console.log({ sort });
     setSort(sort);
   };
 
@@ -63,7 +62,6 @@ function AdminOrders() {
 
   useEffect(() => {
     const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
-    console.log(orders, "ORDERs");
     dispatch(fetchAllOrdersAsync({ sort, pagination }));
   }, [dispatch, page, sort]);
 

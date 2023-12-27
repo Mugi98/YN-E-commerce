@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { Link, Navigate } from "react-router-dom";
-import logo from "../../../Y-N E-commerce.jpg";
+import logo from "../../../assests/Y-N E-commerce.jpg";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { selectLoggedInUser, createUserAsync } from "../authSlice";
 

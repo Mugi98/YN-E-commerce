@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import PageNotFoundImg from "../404_error.png";
+import PageNotFoundImg from "../assests/404_error.png";
 
 function PageNotFound() {
   return (

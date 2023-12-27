@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const paymentschema = new mongoose.Schema({
+const paymentSchema = new mongoose.Schema({
   razorpay_order_id: {
     type: String,
     required: true,
@@ -14,6 +14,19 @@ const paymentschema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  cardDetails: { type: Object },
 });
 
-exports.payments = mongoose.model("payments", paymentschema);
+const virtual = paymentSchema.virtual("id");
+virtual.get(function () {
+  return this._id;
+});
+paymentSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret._id;
+  },
+});
+
+exports.payments = mongoose.model("payments", paymentSchema);

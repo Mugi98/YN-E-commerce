@@ -42,30 +42,6 @@ exports.fetchOrderByUser = async (req, res) => {
   }
 };
 
-exports.fetchUserPaymentDetails = async (req, res) => {
-  const paymentId = req.params.id;
-  const key = process.env.KEY;
-  const secret = process.env.SECRET;
-  const credentials = `${key}:${secret}`;
-  const base64Credentials = Buffer.from(credentials).toString("base64");
-
-  const headers = {
-    Authorization: `Basic ${base64Credentials}`,
-  };
-  console.log(paymentId, "PAYMENTID");
-  const apiUrl = `https://api.razorpay.com/v1/payments/${paymentId}`;
-
-  try {
-    const response = await axios.get(apiUrl, { headers });
-    res.status(200).json(response.data);
-  } catch (error) {
-    console.error(`Error: ${error.message}`);
-    res.status(400).json({ error: "Internal Server Error" });
-    // Optionally, you might choose to throw the error to stop further execution
-    // throw error;
-  }
-};
-
 exports.createOrder = async (req, res) => {
   const order = new Order(req.body);
   try {

@@ -9,7 +9,8 @@ import {
 
 export default function UserOrders() {
   const dispatch = useDispatch();
-  const [paymentId, setPaymentId] = useState("");
+  const [paymentIds, setPaymentIds] = useState(null);
+  const [orderId, setOrderId] = useState(null);
   const orders = useSelector(selectUserOrders);
   const cardDetails = useSelector(selectPaymentDeatils);
 
@@ -43,26 +44,32 @@ export default function UserOrders() {
     }
   };
 
-  const handleCardPayment = async (paymentID) => {
-    setPaymentId(paymentID);
+  const handleCardPayment = (PaymentByCardId, razorPayId) => {
+    setOrderId(PaymentByCardId);
+    setPaymentIds(razorPayId);
   };
 
   useEffect(() => {
-    dispatch(fetchUserPaymentDetailsAsync(paymentId));
+    if ((paymentIds, orderId)) {
+      dispatch(
+        fetchUserPaymentDetailsAsync({
+          paymentID: paymentIds,
+          orderID: orderId,
+        })
+      );
+    }
+
     dispatch(fetchLoggedInUserOrderAsync());
-  }, [dispatch, paymentId]);
+  }, [dispatch, paymentIds, orderId]);
 
   return (
     <div>
       {orders?.map((order) => (
-        <div>
+        <div key={order.id}>
           <div>
             <div className="mx-auto mt-12 bg-white max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-                <h1
-                  onClick={() => console.log(order)}
-                  className="text-4xl my-5 font-bold tracking-tight text-gray-900"
-                >
+                <h1 className="text-4xl my-5 font-bold tracking-tight text-gray-900">
                   Order # {order?.id}
                 </h1>
                 <h3
@@ -342,33 +349,29 @@ export default function UserOrders() {
                     </p>
                     <p className="text-sm font-semibold leading-6 text-gray-900">
                       {order?.paymentMethod === "card" ? (
-                        <div>
+                        <div key={order?.id}>
                           {order?.paymentByCard?.razorpay_payment_id && (
                             <div>
                               Payment ID:-
                               {order?.paymentByCard?.razorpay_payment_id}
                             </div>
                           )}
-                          {cardDetails?.card && (
+                          {order?.paymentByCard?.cardDetails?.network && (
                             <div>
                               Card Network:-
-                              <a
-                                href="https://www.flaticon.com/free-icons/visa"
-                                title="visa icons"
-                              ></a>
-                              {cardDetails?.card?.network}
+                              {order?.paymentByCard?.cardDetails?.network}
                             </div>
                           )}
-                          {cardDetails?.card && (
+                          {order?.paymentByCard?.cardDetails?.last4 && (
                             <div>
                               Card Number:- **** **** ****{" "}
-                              {cardDetails?.card?.last4}
+                              {order?.paymentByCard?.cardDetails?.last4}
                             </div>
                           )}
-                          {cardDetails?.card && (
+                          {order?.paymentByCard?.cardDetails?.type && (
                             <div>
                               Card Type:-
-                              {cardDetails?.card?.type}
+                              {order?.paymentByCard?.cardDetails?.type}
                             </div>
                           )}
                           <div className="flex justify-center">
@@ -376,6 +379,7 @@ export default function UserOrders() {
                               className="mt-10 flex w-1/2 items-center justify-center rounded-md border border-transparent bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                               onClick={() =>
                                 handleCardPayment(
+                                  order.paymentByCard?.id,
                                   order?.paymentByCard?.razorpay_payment_id
                                 )
                               }

@@ -49,7 +49,6 @@ function Checkout() {
   };
 
   const handleAddress = (e) => {
-    console.log(user, "USER");
     setSelectedAddress(user.addresses[e.target.value]);
   };
 
@@ -66,7 +65,6 @@ function Checkout() {
     } = await axios.post("http://localhost:8080/payment/checkout", {
       totalAmount,
     });
-    console.log(order, "ORDER");
     const options = {
       key,
       amount: order.amount,
@@ -79,18 +77,17 @@ function Checkout() {
         try {
           const verifyUrl = "http://localhost:8080/payment/paymentverification";
           const { data } = await axios.post(verifyUrl, response);
-          console.log(data, "REsponse");
-          const order = {
+          const orderFinal = {
             items,
             totalAmount,
             totalItems,
             user: user.id,
             paymentMethod,
-            paymentByCard: data.response._id,
+            paymentByCard: data.response.id,
             selectedAddress,
             status: "pending",
           };
-          dispatch(createOrderAsync(order));
+          dispatch(createOrderAsync(orderFinal));
         } catch (error) {
           console.log(error);
         }

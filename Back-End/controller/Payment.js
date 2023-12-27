@@ -2,7 +2,8 @@ const express = require("express");
 const { payments } = require("../model/payment");
 const crypto = require("crypto");
 const { instance } = require("../services/common");
-const { createOrder } = require("./Order");
+const { Order } = require("../model/order");
+const axios = require("axios");
 
 const router = express.Router();
 
@@ -18,6 +19,7 @@ exports.checkout = async (req, res) => {
     order,
   });
 };
+
 exports.paymentVerification = async (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
     req.body;
@@ -43,6 +45,37 @@ exports.paymentVerification = async (req, res) => {
     res.status(400).json({
       success: false,
     });
+  }
+};
+
+exports.fetchUserPaymentDetails = async (req, res) => {
+  console.log(req.query);
+  const paymentId = req.query.paymentID;
+  const key = process.env.KEY;
+  const secret = process.env.SECRET;
+  const credentials = `${key}:${secret}`;
+  const base64Credentials = Buffer.from(credentials).toString("base64");
+
+  const headers = {
+    Authorization: `Basic ${base64Credentials}`,
+  };
+  const apiUrl = `https://api.razorpay.com/v1/payments/${paymentId}`;
+
+  try {
+    const response = await axios.get(apiUrl, { headers });
+    const orderId = req.query.orderID; // Replace with the actual way you get the order ID
+    console.log(orderId);
+    // Update the order document with the new card details
+    const updatedOrder = await payments.findByIdAndUpdate(
+      orderId,
+      { $set: { cardDetails: response.data.card } }, // Assuming response.data contains the entire card details
+      { new: true }
+    );
+    console.log(updatedOrder);
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    res.status(400).json({ error: "Internal Server Error" });
   }
 };
 

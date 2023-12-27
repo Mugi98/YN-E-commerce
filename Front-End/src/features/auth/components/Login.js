@@ -3,7 +3,7 @@ import { selectError, selectLoggedInUser } from "../authSlice";
 import { Link, Navigate } from "react-router-dom";
 import { loginUserAsync } from "../authSlice";
 import { useForm } from "react-hook-form";
-import logo from "../../../Y-N E-commerce.jpg";
+import logo from "../../../assests/Y-N E-commerce.jpg";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ export default function Login() {
             <img
               className="mx-auto h-16 w-auto"
               src={logo}
-              alt="Your Company"
+              alt="YN Ecommerce"
             />
             <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
               Log in to your account

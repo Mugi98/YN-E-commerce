@@ -49,10 +49,6 @@ export function resetCart(userId) {
   return new Promise(async (reslove) => {
     const response = await fetchItemsByUserId();
     const items = response.data;
-    // items.map(async (item) => {
-    //   console.log(item.id);
-    //   await deleteItemFromCart(item.id);
-    // });
     for (let item of items) {
       await deleteItemFromCart(item.id);
     }
