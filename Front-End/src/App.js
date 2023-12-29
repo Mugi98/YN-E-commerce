@@ -27,6 +27,14 @@ import AdminProductListPage from "./pages/AdminProductListPage";
 import AdminProductDetailsPage from "./pages/AdminProductDetailsPage";
 import AdminProductFormPage from "./pages/AdminProductFormPage";
 import AdminOrdersPage from "./pages/AdminOrdersPage";
+import ResetPasswordsPage from "./pages/ResetPasswordPage";
+import { positions, Provider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
+
+const options = {
+  timeout: 5000,
+  position: positions.BOTTOM_LEFT,
+};
 
 const router = createBrowserRouter([
   {
@@ -101,14 +109,6 @@ const router = createBrowserRouter([
       </Protected>
     ),
   },
-  // {
-  //   path: "/stripe-checkout/",
-  //   element: (
-  //     <Protected>
-  //       <StripeCheckout />
-  //     </Protected>
-  //   ),
-  // },
   {
     path: "/product-detail/:id",
     element: (
@@ -150,6 +150,10 @@ const router = createBrowserRouter([
     element: <ForgotPasswordsPage />,
   },
   {
+    path: "/reset-password",
+    element: <ResetPasswordsPage />,
+  },
+  {
     path: "*",
     element: <PageNotFound></PageNotFound>,
   },
@@ -173,7 +177,11 @@ function App() {
 
   return (
     <div className="App">
-      {userChecked && <RouterProvider router={router}></RouterProvider>}
+      {userChecked && (
+        <Provider template={AlertTemplate} {...options}>
+          <RouterProvider router={router} />
+        </Provider>
+      )}
     </div>
   );
 }

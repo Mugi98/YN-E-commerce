@@ -12,7 +12,6 @@ export const createOrderAsync = createAsyncThunk(
   "order/createOrder",
   async (order) => {
     const response = await createOrder(order);
-    // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
 );
@@ -21,7 +20,6 @@ export const updateOrderAsync = createAsyncThunk(
   "order/updateOrder",
   async (order) => {
     const response = await updateOrder(order);
-    // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
 );
@@ -30,7 +28,6 @@ export const fetchAllOrdersAsync = createAsyncThunk(
   "order/fetchAllOrders",
   async ({ sort, pagination }) => {
     const response = await fetchAllOrders(sort, pagination);
-    // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
 );
@@ -80,5 +77,6 @@ export const selectCurrentOrder = (state) => state?.orders?.currentOrder;
 export const selectOrderSuccess = (state) => state?.orders?.orders;
 export const selectOrders = (state) => state?.orders?.orders;
 export const selectTotalOrders = (state) => state?.orders?.totalOrders;
+export const selectStatus = (state) => state.order.status;
 
 export default orderSlice.reducer;

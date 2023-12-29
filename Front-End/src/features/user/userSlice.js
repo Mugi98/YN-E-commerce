@@ -16,6 +16,7 @@ export const fetchLoggedInUserOrderAsync = createAsyncThunk(
   "user/fetchLoggedInUserOrders",
   async () => {
     const response = await fetchLoggedInUserOrders();
+    console.log(response, "RESPONSE");
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
@@ -93,6 +94,7 @@ export const selectUserOrders = (state) => state.user.userInfo.orders;
 export const selectUserInfo = (state) => state.user.userInfo;
 export const selectPaymentDeatils = (state) =>
   state.user.userInfo.paymentDetails;
+export const selectUserInfoStatus = (state) => state.user.status;
 
 export const { increment } = userSlice.actions;
 

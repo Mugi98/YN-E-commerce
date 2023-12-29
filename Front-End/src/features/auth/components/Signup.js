@@ -35,9 +35,9 @@ export default function Signup() {
                 createUserAsync({
                   email: data.email,
                   password: data.password,
+                  name: data.name,
                   addresses: [
                     {
-                      name: data.name,
                       phone: data.phone,
                       street: data.street,
                       city: data.city,
@@ -120,7 +120,7 @@ export default function Signup() {
             <div>
               <div className="flex items-center justify-between">
                 <label
-                  htmlFor="password"
+                  htmlFor="confirmPassword"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Confirm Password

@@ -7,15 +7,12 @@ import {
   selectAllBrands,
   selectAllCategories,
   selectAllProducts,
+  selectProductListStatus,
   selectTotalItems,
 } from "../../ProductSlice";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  StarIcon,
-} from "@heroicons/react/20/solid";
+import { StarIcon } from "@heroicons/react/20/solid";
 import {
   ChevronDownIcon,
   FunnelIcon,
@@ -25,6 +22,7 @@ import {
 import { Link } from "react-router-dom";
 import { ITEMS_PER_PAGE } from "../../../../common/constants";
 import Pagination from "../../../../common/pagination";
+import { Grid } from "react-loader-spinner";
 
 const sortOptions = [
   { name: "Best Rating", sort: "rating", order: "desc", current: false },
@@ -47,6 +45,7 @@ export default function ProductList() {
   const [sort, setSort] = useState({});
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const statusLoad = useSelector(selectProductListStatus);
 
   const filters = [
     {
@@ -63,7 +62,6 @@ export default function ProductList() {
 
   const handleFilter = (e, section, option) => {
     const newFilter = { ...filter };
-    // TODO : on server it will support multiple categories
     if (e.target.checked) {
       if (newFilter[section.id]) {
         newFilter[section.id].push(option.value);
@@ -187,7 +185,10 @@ export default function ProductList() {
               ></DesktopFilter>
               {/* Product grid */}
               <div className="lg:col-span-3">
-                <ProductGrid products={products}></ProductGrid>
+                <ProductGrid
+                  products={products}
+                  statusLoad={statusLoad}
+                ></ProductGrid>
               </div>
               {/* Product grid end */}
             </div>
@@ -381,11 +382,23 @@ function DesktopFilter({ handleFilter, filters }) {
   );
 }
 
-function ProductGrid({ products }) {
+function ProductGrid({ products, statusLoad }) {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+          {statusLoad === "loading" ? (
+            <Grid
+              height="80"
+              width="80"
+              color="rgb(79, 70, 229) "
+              ariaLabel="grid-loading"
+              radius="12.5"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          ) : null}
           {products.map((product) => (
             <Link to={`/product-detail/${product.id}`}>
               <div
@@ -427,13 +440,7 @@ function ProductGrid({ products }) {
                         ({Math.round(product.discountPercentage)}% Off)
                       </p>
                       <p className="text-sm font-medium text-gray-900 text-end whitespace-nowrap">
-                        <span>
-                          ${" "}
-                          {Math.round(
-                            product.price *
-                              (1 - product.discountPercentage / 100)
-                          )}
-                        </span>
+                        <span>${product.discountedPrice}</span>
                       </p>
                     </div>
                     <p className="text-sm flex justify-end pt-2 items-center gap-x-1.5 text-gray-900">

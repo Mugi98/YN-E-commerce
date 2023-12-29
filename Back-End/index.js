@@ -5,11 +5,13 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const session = require("express-session");
 const passport = require("passport");
+const nodemailer = require("nodemailer");
 const LocalStrategy = require("passport-local").Strategy;
 const JwtStrategy = require("passport-jwt").Strategy;
 const cookieParser = require("cookie-parser");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const path = require("path");
 dotenv.config();
 
 const productsRouter = require("./routes/Products");
@@ -24,23 +26,20 @@ const paymentRouter = require("./routes/Payment");
 const { User } = require("./model/user");
 const { isAuth, santitizeUser, cookieExtractor } = require("./services/common");
 
-const SECRET_KEY = "SECRET_KEY";
-// const stripe = require("stripe")(
-//   "sk_test_51OQuAgSBxJ90nxsuZyC5OACPciyOz1GfVhCEF8hI3YGAA3a6fNd94gUeGG2Y9lU8KJTmIoGBgruEn5wKkAsKuzVV009jEKVrK9"
-// );
+// async..await is not allowed in global scope, must use a wrapper
 
 const opts = {};
 opts.jwtFromRequest = cookieExtractor;
-opts.secretOrKey = SECRET_KEY;
+opts.secretOrKey = process.env.JWT_SECRET_KEY;
 
 server.use(express.json());
 server.use(cors());
 server.use(cors({ exposedHeaders: ["X-Total-Count"] }));
-server.use(express.static("build"));
+server.use(express.static(path.resolve(__dirname, "build")));
 server.use(cookieParser());
 server.use(
   session({
-    secret: "keyboard cat",
+    secret: process.env.SESSION_SECRET_KEY,
     resave: false,
     saveUninitialized: false,
   })
@@ -67,22 +66,28 @@ passport.use(
       const user = await User.findOne({ email: email }).exec();
       if (!user) {
         done(null, false, { message: "No such user found" });
-      }
-      crypto.pbkdf2(
-        password,
-        user.salt,
-        31000,
-        32,
-        "sha256",
-        async function (err, hashedPassword) {
-          if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
-            return done(null, false, { message: "Invalid Credentails" });
-          } else {
-            const token = jwt.sign(santitizeUser(user), SECRET_KEY);
-            return done(null, { id: user.id, role: user.role, token });
+      } else {
+        crypto.pbkdf2(
+          password,
+          user?.salt,
+          31000,
+          32,
+          "sha256",
+          async function (err, hashedPassword) {
+            if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
+              return done(null, false, {
+                message: "Invalid Credentails",
+              });
+            } else {
+              const token = jwt.sign(
+                santitizeUser(user),
+                process.env.JWT_SECRET_KEY
+              );
+              return done(null, { id: user.id, role: user.role, token });
+            }
           }
-        }
-      );
+        );
+      }
     } catch (error) {
       done(error);
     }
@@ -122,7 +127,7 @@ passport.deserializeUser(async function (user, cb) {
 main().catch((err) => console.log(err));
 
 async function main() {
-  mongoose.connect("mongodb://127.0.0.1:27017/test");
+  mongoose.connect(process.env.MONGODB_URI);
   console.log("Database Connected !");
 }
 
@@ -130,6 +135,6 @@ server.get("/", (req, res) => {
   res.json({ status: "success" });
 });
 
-server.listen(8080, () => {
+server.listen(process.env.PORT, () => {
   console.log("Server Started !");
 });

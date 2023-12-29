@@ -49,7 +49,6 @@ exports.paymentVerification = async (req, res) => {
 };
 
 exports.fetchUserPaymentDetails = async (req, res) => {
-  console.log(req.query);
   const paymentId = req.query.paymentID;
   const key = process.env.KEY;
   const secret = process.env.SECRET;
@@ -63,18 +62,14 @@ exports.fetchUserPaymentDetails = async (req, res) => {
 
   try {
     const response = await axios.get(apiUrl, { headers });
-    const orderId = req.query.orderID; // Replace with the actual way you get the order ID
-    console.log(orderId);
-    // Update the order document with the new card details
+    const orderId = req.query.orderID;
     const updatedOrder = await payments.findByIdAndUpdate(
       orderId,
-      { $set: { cardDetails: response.data.card } }, // Assuming response.data contains the entire card details
+      { $set: { cardDetails: response.data.card } },
       { new: true }
     );
-    console.log(updatedOrder);
     res.status(200).json(updatedOrder);
   } catch (error) {
-    console.error(`Error: ${error.message}`);
     res.status(400).json({ error: "Internal Server Error" });
   }
 };

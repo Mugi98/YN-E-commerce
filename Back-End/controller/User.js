@@ -6,6 +6,7 @@ exports.fetchUserById = async (req, res) => {
     const user = await User.findById(id);
     res.status(200).json({
       id: user.id,
+      name: user.name,
       addresses: user.addresses,
       email: user.email,
       role: user.role,

@@ -1,10 +1,12 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import logo from "../../../assests/Y-N E-commerce.jpg";
+import { resetPasswordRequestAsync, selectMailSent } from "../authSlice";
 
 export default function ForgotPasswords() {
   const dispatch = useDispatch();
+  const mailSent = useSelector(selectMailSent);
 
   const {
     register,
@@ -31,7 +33,7 @@ export default function ForgotPasswords() {
             <form
               noValidate
               onSubmit={handleSubmit((data) => {
-                dispatch(console.log(data));
+                dispatch(resetPasswordRequestAsync(data.email));
               })}
               className="space-y-6"
             >
@@ -57,6 +59,9 @@ export default function ForgotPasswords() {
                   />
                   {errors.email && (
                     <p className="text-red-500">{errors.email.message}</p>
+                  )}
+                  {mailSent && (
+                    <p className="text-green-500">Mail Sent Successfully!!!</p>
                   )}
                 </div>
               </div>

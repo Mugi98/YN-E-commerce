@@ -7,15 +7,12 @@ import {
   selectAllBrands,
   selectAllCategories,
   selectAllProducts,
+  selectProductListStatus,
   selectTotalItems,
 } from "../../product/ProductSlice";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  StarIcon,
-} from "@heroicons/react/20/solid";
+import { StarIcon } from "@heroicons/react/20/solid";
 import {
   ChevronDownIcon,
   FunnelIcon,
@@ -25,6 +22,7 @@ import {
 import { Link } from "react-router-dom";
 import { ITEMS_PER_PAGE } from "../../../common/constants";
 import Pagination from "../../../common/pagination";
+import { Hourglass } from "react-loader-spinner";
 
 const sortOptions = [
   { name: "Best Rating", sort: "rating", order: "desc", current: false },
@@ -42,6 +40,7 @@ export default function AdminProductList() {
   const categories = useSelector(selectAllCategories);
   const brand = useSelector(selectAllBrands);
   const totalItems = useSelector(selectTotalItems);
+  const statusLoad = useSelector(selectProductListStatus);
 
   const [filter, setFilter] = useState({});
   const [sort, setSort] = useState({});
@@ -210,7 +209,10 @@ export default function AdminProductList() {
                   </svg>
                   Add Product
                 </Link>
-                <ProductGrid products={products}></ProductGrid>
+                <ProductGrid
+                  products={products}
+                  statusLoad={statusLoad}
+                ></ProductGrid>
               </div>
               {/* Product grid end */}
             </div>
@@ -482,11 +484,23 @@ function DesktopFilter({ handleFilter, filters }) {
 //   );
 // }
 
-function ProductGrid({ products }) {
+function ProductGrid({ products, statusLoad }) {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+          {statusLoad === "loading" ? (
+            <Hourglass
+              height="80"
+              width="80"
+              color="rgb(79, 70, 229) "
+              ariaLabel="hourglass-loading"
+              radius="12.5"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          ) : null}
           {products.map((product) => (
             <div>
               <Link to={`/product-detail/${product.id}`} key={product.id}>
@@ -516,10 +530,7 @@ function ProductGrid({ products }) {
                     </div>
                     <div>
                       <p className="text-sm block font-medium text-gray-900">
-                        $
-                        {Math.round(
-                          product.price * (1 - product.discountPercentage / 100)
-                        )}
+                        ${product.discountedPrice}
                       </p>
                       <p className="text-sm block line-through font-medium text-gray-400">
                         ${product.price}
