@@ -20,7 +20,7 @@ export function createProduct(product) {
 
 export function updateProduct(update) {
   return new Promise(async (resolve) => {
-    const response = await fetch("/products/" + update.id, {
+    const response = await fetch("/products/" + update?.id, {
       method: "PATCH",
       body: JSON.stringify(update),
       headers: { "content-type": "application/json" },

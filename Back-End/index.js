@@ -22,11 +22,10 @@ const authRouter = require("./routes/Auth");
 const cartRouter = require("./routes/Cart");
 const orderRouter = require("./routes/Order");
 const paymentRouter = require("./routes/Payment");
+const wishlistRouter = require("./routes/Wishlist");
 
 const { User } = require("./model/user");
 const { isAuth, santitizeUser, cookieExtractor } = require("./services/common");
-
-// async..await is not allowed in global scope, must use a wrapper
 
 const opts = {};
 opts.jwtFromRequest = cookieExtractor;
@@ -54,6 +53,7 @@ server.use("/auth", authRouter.router);
 server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), orderRouter.router);
 server.use("/payment", isAuth(), paymentRouter.router);
+server.use("/wishlist", isAuth(), wishlistRouter.router);
 
 passport.use(
   "local",

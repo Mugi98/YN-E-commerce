@@ -8,11 +8,13 @@ exports.fetchUserById = async (req, res) => {
       id: user.id,
       name: user.name,
       addresses: user.addresses,
+      wishlist: user.wishlist,
       email: user.email,
       role: user.role,
     });
   } catch (error) {
     res.status(400).json(error);
+    s;
   }
 };
 

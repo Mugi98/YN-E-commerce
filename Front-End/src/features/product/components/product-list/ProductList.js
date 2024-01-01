@@ -183,18 +183,16 @@ export default function ProductList() {
                 handleFilter={handleFilter}
                 filters={filters}
               ></DesktopFilter>
-              {/* Product grid */}
+
               <div className="lg:col-span-3">
                 <ProductGrid
                   products={products}
                   statusLoad={statusLoad}
                 ></ProductGrid>
               </div>
-              {/* Product grid end */}
             </div>
           </section>
 
-          {/* section of product and filters ends */}
           <Pagination
             page={page}
             setPage={setPage}
@@ -257,10 +255,10 @@ function MobileFilter({
 
               {/* Filters */}
               <form className="mt-4 border-t border-gray-200">
-                {filters.map((section) => (
+                {filters?.map((section) => (
                   <Disclosure
                     as="div"
-                    key={section.id}
+                    key={section?.id}
                     className="border-t border-gray-200 px-4 py-6"
                   >
                     {({ open }) => (
@@ -268,7 +266,7 @@ function MobileFilter({
                         <h3 className="-mx-2 -my-3 flow-root">
                           <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
                             <span className="font-medium text-gray-900">
-                              {section.name}
+                              {section?.name}
                             </span>
                             <span className="ml-6 flex items-center">
                               {open ? (
@@ -289,25 +287,25 @@ function MobileFilter({
                           <div className="space-y-6">
                             {section?.options?.map((option, optionIdx) => (
                               <div
-                                key={option.value}
+                                key={option?.value}
                                 className="flex items-center"
                               >
                                 <input
-                                  id={`filter-mobile-${section.id}-${optionIdx}`}
-                                  name={`${section.id}[]`}
-                                  defaultValue={option.value}
+                                  id={`filter-mobile-${section?.id}-${optionIdx}`}
+                                  name={`${section?.id}[]`}
+                                  defaultValue={option?.value}
                                   type="checkbox"
-                                  defaultChecked={option.checked}
+                                  defaultChecked={option?.checked}
                                   onChange={(e) =>
                                     handleFilter(e, section, option)
                                   }
                                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                 />
                                 <label
-                                  htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
+                                  htmlFor={`filter-mobile-${section?.id}-${optionIdx}`}
                                   className="ml-3 min-w-0 flex-1 text-gray-500"
                                 >
-                                  {option.label}
+                                  {option?.label}
                                 </label>
                               </div>
                             ))}
@@ -329,7 +327,7 @@ function MobileFilter({
 function DesktopFilter({ handleFilter, filters }) {
   return (
     <form className="hidden lg:block">
-      {filters.map((section) => (
+      {filters?.map((section) => (
         <Disclosure
           as="div"
           key={section.id}
@@ -340,7 +338,7 @@ function DesktopFilter({ handleFilter, filters }) {
               <h3 className="-my-3 flow-root">
                 <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
                   <span className="font-medium text-gray-900">
-                    {section.name}
+                    {section?.name}
                   </span>
                   <span className="ml-6 flex items-center">
                     {open ? (
@@ -356,19 +354,19 @@ function DesktopFilter({ handleFilter, filters }) {
                   {section?.options?.map((option, optionIdx) => (
                     <div key={option.value} className="flex items-center">
                       <input
-                        id={`filter-${section.id}-${optionIdx}`}
-                        name={`${section.id}[]`}
+                        id={`filter-${section?.id}-${optionIdx}`}
+                        name={`${section?.id}[]`}
                         defaultValue={option.value}
                         type="checkbox"
-                        defaultChecked={option.checked}
+                        defaultChecked={option?.checked}
                         onChange={(e) => handleFilter(e, section, option)}
                         className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                       />
                       <label
-                        htmlFor={`filter-${section.id}-${optionIdx}`}
+                        htmlFor={`filter-${section?.id}-${optionIdx}`}
                         className="ml-3 text-sm text-gray-600"
                       >
-                        {option.label}
+                        {option?.label}
                       </label>
                     </div>
                   ))}
@@ -399,32 +397,32 @@ function ProductGrid({ products, statusLoad }) {
               visible={true}
             />
           ) : null}
-          {products.map((product) => (
+          {products?.map((product) => (
             <Link to={`/product-detail/${product.id}`}>
               <div
-                key={product.id}
+                key={product?.id}
                 className="group relative border-solid border-2 p-2 border-gray-200"
               >
                 <div className="min-h-60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
                   <img
-                    src={product.thumbnail}
-                    alt={product.title}
+                    src={product?.thumbnail}
+                    alt={product?.title}
                     className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                   />
                 </div>
                 <div className="mt-4 flex justify-between">
                   <div>
                     <h3 className="text-sm text-gray-700">
-                      <div href={product.id}>
+                      <div href={product?.id}>
                         <span aria-hidden="true" className="absolute inset-0" />
-                        {product.title}
+                        {product?.title}
                       </div>
                     </h3>
                     <p className="mt-1 text-sm text-gray-900 font-bold">
-                      {product.brand}
+                      {product?.brand}
                     </p>
                     <p className="mt-1 text-sm whitespace-nowrap">
-                      {product.stock > 0 ? (
+                      {product?.stock > 0 ? (
                         <span className="text-green-500">In Stock</span>
                       ) : (
                         <span className="text-red-500">Out of Stock</span>
@@ -435,17 +433,17 @@ function ProductGrid({ products, statusLoad }) {
                     <div>
                       <p className="text-sm font-medium text-gray-500 text-end whitespace-nowrap">
                         <span className="line-through pe-1 ">
-                          $ {product.price}
+                          $ {product?.price}
                         </span>
-                        ({Math.round(product.discountPercentage)}% Off)
+                        ({Math.round(product?.discountPercentage)}% Off)
                       </p>
                       <p className="text-sm font-medium text-gray-900 text-end whitespace-nowrap">
-                        <span>${product.discountedPrice}</span>
+                        <span>${product?.discountedPrice}</span>
                       </p>
                     </div>
                     <p className="text-sm flex justify-end pt-2 items-center gap-x-1.5 text-gray-900">
                       <StarIcon className="w-4 h-4 inline"></StarIcon>
-                      <span className="align-bottom">{product.rating}</span>
+                      <span className="align-bottom">{product?.rating}</span>
                     </p>
                   </div>
                 </div>

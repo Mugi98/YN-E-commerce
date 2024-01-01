@@ -11,6 +11,8 @@ import { useParams } from "react-router-dom";
 import { addToCartAsync } from "../../cart/cartSlice";
 import { useAlert } from "react-alert";
 import { Hourglass } from "react-loader-spinner";
+import { selectUserInfo } from "../../user/userSlice";
+import { addToWishlistAsync } from "../../wishlist/wishlistSlice";
 
 const colors = [
   { name: "White", class: "bg-white", selectedClass: "ring-gray-400" },
@@ -33,19 +35,22 @@ function classNames(...classes) {
 }
 
 export default function AdminProductDetails() {
-  const [selectedColor, setSelectedColor] = useState(colors[0]);
-  const [selectedSize, setSelectedSize] = useState(sizes[2]);
-  const product = useSelector(selectProductById);
   const dispatch = useDispatch();
   const params = useParams();
   const alert = useAlert();
+
+  const [selectedColor, setSelectedColor] = useState(colors[0]);
+  const [selectedSize, setSelectedSize] = useState(sizes[2]);
+
+  const product = useSelector(selectProductById);
   const status = useSelector(selectProductListStatus);
+  const user = useSelector(selectUserInfo);
 
   const handleCart = (e) => {
     e.preventDefault();
-    if (product.findIndex((item) => item.product.id === product.id) < 0) {
+    if (product.findIndex((item) => item?.product?.id === product?.id) < 0) {
       const newItem = {
-        product: product.id,
+        product: product?.id,
         quantity: 1,
       };
       if (selectedColor) {
@@ -61,9 +66,28 @@ export default function AdminProductDetails() {
     }
   };
 
+  const handleWishlist = (e) => {
+    e.preventDefault();
+    if (product.findIndex((item) => item?.product?.id === product?.id) < 0) {
+      const newItem = {
+        product: product?.id,
+        user: user?.id,
+      };
+      if (selectedColor) {
+        newItem.color = selectedColor;
+      }
+      if (selectedSize) {
+        newItem.size = selectedSize;
+      }
+      dispatch(addToWishlistAsync({ item: newItem, alert }));
+    } else {
+      alert?.error("Item already added in wishlist");
+    }
+  };
+
   useEffect(() => {
-    dispatch(fetchProductByIdAsync(params.id));
-  }, [dispatch, params.id]);
+    dispatch(fetchProductByIdAsync(params?.id));
+  }, [dispatch, params?.id]);
 
   return (
     <div className="bg-white">
@@ -184,13 +208,7 @@ export default function AdminProductDetails() {
                       />
                     ))}
                   </div>
-                  <p className="sr-only">{product?.rating} out of 5 stars</p>
-                  {/* <a
-                  href={reviews.href}
-                  className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                >
-                  {reviews.totalCount} reviews
-                </a> */}
+                  <p className="pl-5">{product?.rating} out of 5 stars</p>
                 </div>
               </div>
 
@@ -210,11 +228,11 @@ export default function AdminProductDetails() {
                     <div className="flex items-center space-x-3">
                       {colors.map((color) => (
                         <RadioGroup.Option
-                          key={color.name}
+                          key={color?.name}
                           value={color}
                           className={({ active, checked }) =>
                             classNames(
-                              color.selectedClass,
+                              color?.selectedClass,
                               active && checked ? "ring ring-offset-1" : "",
                               !active && checked ? "ring-2" : "",
                               "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none"
@@ -222,12 +240,12 @@ export default function AdminProductDetails() {
                           }
                         >
                           <RadioGroup.Label as="span" className="sr-only">
-                            {color.name}
+                            {color?.name}
                           </RadioGroup.Label>
                           <span
                             aria-hidden="true"
                             className={classNames(
-                              color.class,
+                              color?.class,
                               "h-8 w-8 rounded-full border border-black border-opacity-10"
                             )}
                           />
@@ -260,12 +278,12 @@ export default function AdminProductDetails() {
                     <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
                       {sizes.map((size) => (
                         <RadioGroup.Option
-                          key={size.name}
+                          key={size?.name}
                           value={size}
-                          disabled={!size.inStock}
+                          disabled={!size?.inStock}
                           className={({ active }) =>
                             classNames(
-                              size.inStock
+                              size?.inStock
                                 ? "cursor-pointer bg-white text-gray-900 shadow-sm"
                                 : "cursor-not-allowed bg-gray-50 text-gray-200",
                               active ? "ring-2 ring-indigo-500" : "",
@@ -276,9 +294,9 @@ export default function AdminProductDetails() {
                           {({ active, checked }) => (
                             <>
                               <RadioGroup.Label as="span">
-                                {size.name}
+                                {size?.name}
                               </RadioGroup.Label>
-                              {size.inStock ? (
+                              {size?.inStock ? (
                                 <span
                                   className={classNames(
                                     active ? "border" : "border-2",
@@ -324,6 +342,13 @@ export default function AdminProductDetails() {
                   className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   Add To Cart
+                </button>
+                <button
+                  onClick={handleWishlist}
+                  type="submit"
+                  className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Add To Wishlist
                 </button>
               </form>
             </div>

@@ -41,7 +41,7 @@ export default function ResetPasswords() {
                     resetPasswordAsync({
                       email,
                       token,
-                      password: data.password,
+                      password: data?.password,
                     })
                   );
                 })}
@@ -97,7 +97,7 @@ export default function ResetPasswords() {
                       {...register("confirmPassword", {
                         required: "Conmfirm password is required !",
                         validate: (value, formValues) =>
-                          value === formValues.password ||
+                          value === formValues?.password ||
                           "Password not matching !",
                       })}
                       type="password"

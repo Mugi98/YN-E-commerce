@@ -48,15 +48,15 @@ export const orderSlice = createSlice({
       .addCase(createOrderAsync.fulfilled, (state, action) => {
         state.status = "idle";
         state.orders.push(action.payload);
-        state.currentOrder = action.payload;
+        state.currentOrder = action?.payload;
       })
       .addCase(fetchAllOrdersAsync.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetchAllOrdersAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.orders = action.payload.orders;
-        state.totalOrders = action.payload.totalOrders;
+        state.orders = action?.payload?.orders;
+        state.totalOrders = action?.payload?.totalOrders;
       })
       .addCase(updateOrderAsync.pending, (state) => {
         state.status = "loading";
@@ -64,9 +64,9 @@ export const orderSlice = createSlice({
       .addCase(updateOrderAsync.fulfilled, (state, action) => {
         state.status = "idle";
         const index = state.orders.findIndex(
-          (order) => order.id === action.payload.id
+          (order) => order?.id === action?.payload?.id
         );
-        state.orders[index] = action.payload;
+        state.orders[index] = action?.payload;
       });
   },
 });
@@ -77,6 +77,6 @@ export const selectCurrentOrder = (state) => state?.orders?.currentOrder;
 export const selectOrderSuccess = (state) => state?.orders?.orders;
 export const selectOrders = (state) => state?.orders?.orders;
 export const selectTotalOrders = (state) => state?.orders?.totalOrders;
-export const selectStatus = (state) => state.order.status;
+export const selectStatus = (state) => state?.order?.status;
 
 export default orderSlice.reducer;

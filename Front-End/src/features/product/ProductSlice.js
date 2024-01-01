@@ -85,36 +85,36 @@ export const productSlice = createSlice({
       })
       .addCase(fetchProductByIdAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.selectedProduct = action.payload;
+        state.selectedProduct = action?.payload;
       })
       .addCase(fetchProductsByFiltersAsync.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetchProductsByFiltersAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.products = action.payload.products;
-        state.totalItems = action.payload.totalItems;
+        state.products = action?.payload?.products;
+        state.totalItems = action?.payload?.totalItems;
       })
       .addCase(fetchAllBrandAsync.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetchAllBrandAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.brands = action.payload;
+        state.brands = action?.payload;
       })
       .addCase(fetchAllCategoriesAsync.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetchAllCategoriesAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.categories = action.payload;
+        state.categories = action?.payload;
       })
       .addCase(createProductAsync.pending, (state) => {
         state.status = "loading";
       })
       .addCase(createProductAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.products.push(action.payload);
+        state.products.push(action?.payload);
       })
       .addCase(updateProductAsync.pending, (state) => {
         state.status = "loading";
@@ -122,9 +122,9 @@ export const productSlice = createSlice({
       .addCase(updateProductAsync.fulfilled, (state, action) => {
         state.status = "idle";
         const index = state.products.findIndex(
-          (product) => product.id === action.payload.id
+          (product) => product?.id === action?.payload?.id
         );
-        state.products[index] = action.payload;
+        state.products[index] = action?.payload;
       });
   },
 });
@@ -133,11 +133,11 @@ export const { clearSelectedProduct } = productSlice.actions;
 
 export const { increment } = productSlice.actions;
 
-export const selectAllProducts = (state) => state.product.products;
-export const selectProductById = (state) => state.product.selectedProduct;
-export const selectAllCategories = (state) => state.product.categories;
-export const selectAllBrands = (state) => state.product.brands;
-export const selectTotalItems = (state) => state.product.totalItems;
-export const selectProductListStatus = (state) => state.product.status;
+export const selectAllProducts = (state) => state?.product?.products;
+export const selectProductById = (state) => state?.product?.selectedProduct;
+export const selectAllCategories = (state) => state?.product?.categories;
+export const selectAllBrands = (state) => state?.product?.brands;
+export const selectTotalItems = (state) => state?.product?.totalItems;
+export const selectProductListStatus = (state) => state?.product?.status;
 
 export default productSlice.reducer;

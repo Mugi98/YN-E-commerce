@@ -33,16 +33,16 @@ export default function Signup() {
             onSubmit={handleSubmit((data) => {
               dispatch(
                 createUserAsync({
-                  email: data.email,
-                  password: data.password,
-                  name: data.name,
+                  email: data?.email,
+                  password: data?.password,
+                  name: data?.name,
                   addresses: [
                     {
-                      phone: data.phone,
-                      street: data.street,
-                      city: data.city,
-                      state: data.state,
-                      pincode: data.pinCode,
+                      phone: data?.phone,
+                      street: data?.street,
+                      city: data?.city,
+                      state: data?.state,
+                      pincode: data?.pinCode,
                     },
                   ],
                   role: "user",
@@ -132,7 +132,7 @@ export default function Signup() {
                   {...register("confirmPassword", {
                     required: "Conmfirm password is required !",
                     validate: (value, formValues) =>
-                      value === formValues.password ||
+                      value === formValues?.password ||
                       "Password not matching !",
                   })}
                   type="password"
@@ -166,8 +166,8 @@ export default function Signup() {
                   id="name"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
-                {errors.name && (
-                  <p className="text-red-500">{errors.name.message}</p>
+                {errors?.name && (
+                  <p className="text-red-500">{errors?.name?.message}</p>
                 )}
               </div>
             </div>
@@ -188,8 +188,8 @@ export default function Signup() {
                   type="tel"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
-                {errors.phone && (
-                  <p className="text-red-500">{errors.phone.message}</p>
+                {errors?.phone && (
+                  <p className="text-red-500">{errors?.phone?.message}</p>
                 )}
               </div>
             </div>
@@ -210,8 +210,8 @@ export default function Signup() {
                   id="street"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
-                {errors.street && (
-                  <p className="text-red-500">{errors.street.message}</p>
+                {errors?.street && (
+                  <p className="text-red-500">{errors?.street?.message}</p>
                 )}
               </div>
             </div>
@@ -233,8 +233,8 @@ export default function Signup() {
                   autoComplete="address-level2"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
-                {errors.city && (
-                  <p className="text-red-500">{errors.city.message}</p>
+                {errors?.city && (
+                  <p className="text-red-500">{errors?.city?.message}</p>
                 )}
               </div>
             </div>
@@ -256,8 +256,8 @@ export default function Signup() {
                   autoComplete="address-level1"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
-                {errors.state && (
-                  <p className="text-red-500">{errors.state.message}</p>
+                {errors?.state && (
+                  <p className="text-red-500">{errors?.state?.message}</p>
                 )}
               </div>
             </div>
@@ -278,8 +278,8 @@ export default function Signup() {
                   id="pinCode"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
-                {errors.pinCode && (
-                  <p className="text-red-500">{errors.pinCode.message}</p>
+                {errors?.pinCode && (
+                  <p className="text-red-500">{errors?.pinCode?.message}</p>
                 )}
               </div>
             </div>

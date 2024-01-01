@@ -30,6 +30,8 @@ import AdminOrdersPage from "./pages/AdminOrdersPage";
 import ResetPasswordsPage from "./pages/ResetPasswordPage";
 import { positions, Provider } from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
+import UserWishlistPage from "./pages/UserWishlist";
+import { fetchWishlistByUserIdAsync } from "./features/wishlist/wishlistSlice";
 
 const options = {
   timeout: 5000,
@@ -142,6 +144,14 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/wishlist",
+    element: (
+      <Protected>
+        <UserWishlistPage></UserWishlistPage>,
+      </Protected>
+    ),
+  },
+  {
     path: "/logout",
     element: <Logout />,
   },
@@ -171,6 +181,7 @@ function App() {
   useEffect(() => {
     if (user) {
       dispatch(fetchItemsByUserIdAsync());
+      dispatch(fetchWishlistByUserIdAsync());
       dispatch(fetchLoggedInUserAsync());
     }
   }, [dispatch, user]);

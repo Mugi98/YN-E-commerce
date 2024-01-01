@@ -14,13 +14,13 @@ import { selectUserInfo } from "../user/userSlice";
 
 const navigation = [
   { name: "Home", link: "/", user: true },
-  { name: "Product", link: "/", user: true },
   { name: "Product", link: "/admin", admin: true },
   { name: "Order", link: "/admin/order", admin: true },
 ];
 const userNavigation = [
   { name: "Your Profile", link: "/profile" },
   { name: "My Orders", link: "/orders" },
+  { name: "My Wishlist", link: "/wishlist" },
   { name: "Log out", link: "/logout" },
 ];
 
@@ -53,20 +53,22 @@ function NavBar({ children }) {
                       </div>
                       <div className="hidden md:block">
                         <div className="nav-item ml-10 flex items-baseline space-x-4">
-                          {navigation.map((item) =>
+                          {navigation?.map((item) =>
                             item[user?.role] ? (
                               <Link
-                                key={item.name}
-                                to={item.link}
+                                key={item?.name}
+                                to={item?.link}
                                 className={classNames(
-                                  item.current
+                                  item?.current
                                     ? "text-white"
                                     : "text-gray-300 hover:text-white",
                                   "rounded-md px-3 py-2 text-sm font-medium"
                                 )}
-                                aria-current={item.current ? "page" : undefined}
+                                aria-current={
+                                  item?.current ? "page" : undefined
+                                }
                               >
-                                {item.name}
+                                {item?.name}
                               </Link>
                             ) : null
                           )}
@@ -88,9 +90,9 @@ function NavBar({ children }) {
                           </button>
                         </Link>
 
-                        {items.length > 0 && (
+                        {items?.length > 0 && (
                           <span className="inline-flex items-center rounded-full mb-5 -ml-3 z-50 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
-                            {items.length}
+                            {items?.length}
                           </span>
                         )}
                         {/* Profile dropdown */}
@@ -116,17 +118,18 @@ function NavBar({ children }) {
                             leaveTo="transform opacity-0 scale-95"
                           >
                             <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                              {userNavigation.map((item) => (
-                                <Menu.Item key={item.name}>
+                              {userNavigation?.map((item) => (
+                                <Menu.Item key={item?.name}>
                                   {({ active }) => (
                                     <Link
-                                      to={item.link}
+                                      key={item?.name}
+                                      to={item?.link}
                                       className={classNames(
                                         active ? "bg-gray-100" : "",
                                         "block px-4 py-2 text-sm text-gray-700"
                                       )}
                                     >
-                                      {item.name}
+                                      {item?.name}
                                     </Link>
                                   )}
                                 </Menu.Item>
@@ -159,20 +162,22 @@ function NavBar({ children }) {
 
                 <Disclosure.Panel className="md:hidden">
                   <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-                    {navigation.map((item) =>
+                    {navigation?.map((item) =>
                       item[user?.role] ? (
-                        <Disclosure.Button
-                          key={item.name}
-                          to={item.link}
-                          className={classNames(
-                            item.current
-                              ? "text-white"
-                              : "text-gray-300 hover:text-white",
-                            "rounded-md px-3 py-2 text-sm font-medium"
-                          )}
-                          aria-current={item.current ? "page" : undefined}
-                        >
-                          {item.name}
+                        <Disclosure.Button>
+                          <Link
+                            key={item?.name}
+                            to={item?.link}
+                            className={classNames(
+                              item?.current
+                                ? "text-white"
+                                : "text-gray-300 hover:text-white",
+                              "rounded-md px-3 py-2 text-sm font-medium"
+                            )}
+                            aria-current={item?.current ? "page" : undefined}
+                          >
+                            {item?.name}
+                          </Link>
                         </Disclosure.Button>
                       ) : null
                     )}
@@ -209,7 +214,7 @@ function NavBar({ children }) {
                             </span>
                             {items.length > 0 && (
                               <span className="item-counter inline-flex items-end rounded-full z-50 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
-                                {items.length}
+                                {items?.length}
                               </span>
                             )}
                           </button>
@@ -218,13 +223,10 @@ function NavBar({ children }) {
                     </div>
                     <div className="mt-3 space-y-1 px-2">
                       {userNavigation.map((item) => (
-                        <Disclosure.Button
-                          key={item.name}
-                          as="a"
-                          href={item.href}
-                          className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                        >
-                          {item.name}
+                        <Disclosure.Button className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">
+                          <Link key={item?.name} to={item?.link}>
+                            {item?.name}
+                          </Link>
                         </Disclosure.Button>
                       ))}
                     </div>

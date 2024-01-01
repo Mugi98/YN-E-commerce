@@ -9,6 +9,7 @@ const userSchema = new Schema(
     addresses: { type: [Schema.Types.Mixed] },
     name: { type: String },
     orders: { type: [Schema.Types.Mixed] },
+    wishlist: { type: Schema.Types.ObjectId, ref: "Product" },
     salt: Buffer,
     resetPasswordToken: { type: String, default: " " },
   },

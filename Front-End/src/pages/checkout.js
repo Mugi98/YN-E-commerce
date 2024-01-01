@@ -28,10 +28,10 @@ function Checkout() {
   const orderPlaced = useSelector(selectCurrentOrder);
 
   const subTotalAmount = items.reduce(
-    (amount, item) => item.product.discountedPrice * item.quantity + amount,
+    (amount, item) => item?.product?.discountedPrice * item?.quantity + amount,
     0
   );
-  const totalItems = items.reduce((total, item) => item.quantity + total, 0);
+  const totalItems = items.reduce((total, item) => item?.quantity + total, 0);
 
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("cash");
@@ -40,7 +40,7 @@ function Checkout() {
   const totalAmount = subTotalAmount + eighteenPercent;
 
   const handleQuantity = (e, item) => {
-    dispatch(updateCartAsync({ id: item.id, quantity: +e.target.value }));
+    dispatch(updateCartAsync({ id: item?.id, quantity: +e?.target?.value }));
   };
 
   const handleRemove = (e, id) => {
@@ -48,11 +48,11 @@ function Checkout() {
   };
 
   const handleAddress = (e) => {
-    setSelectedAddress(user.addresses[e.target.value]);
+    setSelectedAddress(user?.addresses[e?.target?.value]);
   };
 
   const handlePayment = (e) => {
-    setPaymentMethod(e.target.value);
+    setPaymentMethod(e?.target?.value);
   };
 
   const checkouthandler = async () => {
@@ -66,12 +66,12 @@ function Checkout() {
     });
     const options = {
       key,
-      amount: order.amount,
+      amount: order?.amount,
       currency: "INR",
       name: "YN Ecommerce",
       description: "YN Ecommerce",
       image: "https://avatars.githubusercontent.com/u/96648429?s=96&v=4",
-      order_id: order.id,
+      order_id: order?.id,
       handler: async (response) => {
         try {
           const verifyUrl = "/payment/paymentverification";
@@ -80,9 +80,9 @@ function Checkout() {
             items,
             totalAmount,
             totalItems,
-            user: user.id,
+            user: user?.id,
             paymentMethod,
-            paymentByCard: data.response.id,
+            paymentByCard: data?.response?.id,
             selectedAddress,
             status: "pending",
           };
@@ -113,7 +113,7 @@ function Checkout() {
         items,
         totalAmount,
         totalItems,
-        user: user.id,
+        user: user?.id,
         paymentMethod,
         selectedAddress,
         status: "pending",
@@ -128,7 +128,7 @@ function Checkout() {
     <>
       {orderPlaced && (
         <Navigate
-          to={`/order-confirmation/${orderPlaced.id}`}
+          to={`/order-confirmation/${orderPlaced?.id}`}
           replace={true}
         ></Navigate>
       )}
@@ -154,7 +154,7 @@ function Checkout() {
                   dispatch(
                     updateUserAsync({
                       ...user,
-                      addresses: [...user.addresses, data],
+                      addresses: [...user?.addresses, data],
                     })
                   );
                   reset();
@@ -330,14 +330,11 @@ function Checkout() {
                     <p className="mt-1 text-sm leading-6 text-gray-600">
                       Choose from Existing addresses
                     </p>
-                    <div
-                      className="grid grid-rows-4 grid-flow-col gap-4"
-                      role="list"
-                    >
-                      {user?.addresses?.map((address, index) => (
-                        <div
+                    <ul>
+                      {user.addresses.map((address, index) => (
+                        <li
                           key={index}
-                          className="flex mx-6 my-6 justify-between gap-x-6 px-5 py-5 border-solid border-2 border-gray-200"
+                          className="flex justify-between gap-x-6 px-5 py-5 border-solid border-2 border-gray-200"
                         >
                           <div className="flex gap-x-4">
                             <input
@@ -347,30 +344,34 @@ function Checkout() {
                               value={index}
                               className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                             />
-                            <div className="min-w-0 flex-auto">
-                              <p className="text-sm font-semibold leading-6 break-words text-gray-900">
-                                {address.name}
-                              </p>
-                              <p className="mt-1 truncate text-xs leading-5 break-words text-gray-500">
-                                {address.street}
-                              </p>
-                              <p className="mt-1 truncate text-xs leading-5 break-words text-gray-500">
-                                {address.city}
-                              </p>
-                              <p className="mt-1 truncate text-xs leading-5 break-words text-gray-500">
-                                {address.state}
-                              </p>
-                              <p className="mt-1 truncate text-xs leading-5 break-words text-gray-500">
-                                {address.pinCode}
-                              </p>
-                              <p className="mt-1 truncate text-xs leading-5 break-words text-gray-500">
-                                Phone: {address.phone}
-                              </p>
+                            <div>
+                              <div className="flex gap-x-4">
+                                <div className="min-w-0 flex-auto">
+                                  <p className="text-sm font-semibold leading-6 text-gray-900">
+                                    {address.name}
+                                  </p>
+                                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                                    {address.street}
+                                  </p>
+                                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                                    {address.state}
+                                  </p>
+                                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                                    {address.city}
+                                  </p>
+                                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                                    {address.pinCode}
+                                  </p>
+                                  <p className="mt-1 truncate text-xs leading-5 text-gray-500">
+                                    Phone: {address.phone}
+                                  </p>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
 
                     <div className="mt-10 space-y-10">
                       <fieldset>
@@ -430,12 +431,12 @@ function Checkout() {
                   </h1>
                   <div className="flow-root">
                     <ul role="list" className="-my-6 divide-y divide-gray-200">
-                      {items.map((item) => (
-                        <li key={item.id} className="flex py-6">
+                      {items?.map((item) => (
+                        <li key={item?.id} className="flex py-6">
                           <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                             <img
-                              src={item.product.thumbnail}
-                              alt={item.product.title}
+                              src={item?.product?.thumbnail}
+                              alt={item?.product?.title}
                               className="h-full w-full object-cover object-center"
                             />
                           </div>
@@ -444,8 +445,8 @@ function Checkout() {
                             <div>
                               <div className="flex justify-between text-base font-medium text-gray-900">
                                 <h3>
-                                  <a href={item.product.id}>
-                                    {item.product.title}
+                                  <a href={item?.product?.id}>
+                                    {item?.product?.title}
                                   </a>
                                 </h3>
                                 <div>
@@ -455,16 +456,16 @@ function Checkout() {
                                   <p className="ml-4">
                                     $
                                     {Math.round(
-                                      item?.product.price *
+                                      item?.product?.price *
                                         (1 -
-                                          item?.product.discountPercentage /
+                                          item?.product?.discountPercentage /
                                             100)
                                     )}
                                   </p>
                                 </div>
                               </div>
                               <p className="mt-1 text-sm text-gray-500">
-                                {item.brand}
+                                {item?.brand}
                               </p>
                             </div>
                             <div className="flex flex-1 items-end justify-between text-sm">
@@ -477,7 +478,7 @@ function Checkout() {
                                 </label>
                                 <select
                                   onChange={(e) => handleQuantity(e, item)}
-                                  value={item.quantity}
+                                  value={item?.quantity}
                                 >
                                   <option value="1">1</option>
                                   <option value="2">2</option>
@@ -489,7 +490,7 @@ function Checkout() {
 
                               <div className="flex">
                                 <button
-                                  onClick={(e) => handleRemove(e, item.id)}
+                                  onClick={(e) => handleRemove(e, item?.id)}
                                   type="button"
                                   className="font-medium text-indigo-600 hover:text-indigo-500"
                                 >

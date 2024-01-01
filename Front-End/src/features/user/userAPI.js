@@ -30,6 +30,7 @@ export function fetchLoggedInUser() {
     resolve({ data });
   });
 }
+
 export function fetchUserPaymentDetails(paymentID) {
   console.log(paymentID.paymentID, paymentID.orderID);
   return new Promise(async (resolve) => {

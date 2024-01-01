@@ -47,7 +47,7 @@ function AdminOrders() {
   };
 
   const handleSort = (sortOption) => {
-    const sort = { _sort: sortOption.sort, _order: sortOption.order };
+    const sort = { _sort: sortOption?.sort, _order: sortOption?.order };
     console.log({ sort });
     setSort(sort);
   };
@@ -92,8 +92,8 @@ function AdminOrders() {
                     }
                   >
                     Order#{" "}
-                    {sort._sort === "id" &&
-                      (sort._order === "asc" ? (
+                    {sort?._sort === "id" &&
+                      (sort?._order === "asc" ? (
                         <ArrowUpIcon className="w-4 h-4 inline"></ArrowUpIcon>
                       ) : (
                         <ArrowDownIcon className="w-4 h-4 inline"></ArrowDownIcon>
@@ -110,8 +110,8 @@ function AdminOrders() {
                     }
                   >
                     Total Amount{" "}
-                    {sort._sort === "totalAmount" &&
-                      (sort._order === "asc" ? (
+                    {sort?._sort === "totalAmount" &&
+                      (sort?._order === "asc" ? (
                         <ArrowUpIcon className="w-4 h-4 inline"></ArrowUpIcon>
                       ) : (
                         <ArrowDownIcon className="w-4 h-4 inline"></ArrowDownIcon>
@@ -130,8 +130,8 @@ function AdminOrders() {
                     }
                   >
                     Order Time{" "}
-                    {sort._sort === "createdAt" &&
-                      (sort._order === "asc" ? (
+                    {sort?._sort === "createdAt" &&
+                      (sort?._order === "asc" ? (
                         <ArrowUpIcon className="w-4 h-4 inline"></ArrowUpIcon>
                       ) : (
                         <ArrowDownIcon className="w-4 h-4 inline"></ArrowDownIcon>
@@ -147,8 +147,8 @@ function AdminOrders() {
                     }
                   >
                     Last Updated{" "}
-                    {sort._sort === "updatedAt" &&
-                      (sort._order === "asc" ? (
+                    {sort?._sort === "updatedAt" &&
+                      (sort?._order === "asc" ? (
                         <ArrowUpIcon className="w-4 h-4 inline"></ArrowUpIcon>
                       ) : (
                         <ArrowDownIcon className="w-4 h-4 inline"></ArrowDownIcon>
@@ -158,7 +158,7 @@ function AdminOrders() {
                 </tr>
               </thead>
               <tbody className="text-gray-600 text-sm font-light">
-                {orders.map((order) => (
+                {orders?.map((order) => (
                   <tr
                     key={order.id}
                     className="border-b border-gray-200 hover:bg-gray-100"
@@ -166,30 +166,30 @@ function AdminOrders() {
                     <td className="py-3 px-0 text-left whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="mr-2"></div>
-                        <span className="font-medium">{order.id}</span>
+                        <span className="font-medium">{order?.id}</span>
                       </div>
                     </td>
                     <td className="py-3 px-0 text-left">
-                      {order.items.map((item, index) => (
+                      {order?.items?.map((item, index) => (
                         <div key={index} className="flex items-center">
                           <div className="mr-2">
                             <img
                               className="w-6 h-6 rounded-full"
-                              src={item.product.thumbnail}
-                              alt={item.product.title}
+                              src={item?.product?.thumbnail}
+                              alt={item?.product?.title}
                             />
                           </div>
-                          <span>{item.product.title}</span>
+                          <span>{item?.product?.title}</span>
                         </div>
                       ))}
                     </td>
                     <td className="py-3 px-0 text-center">
                       <div className="flex items-center justify-center">
-                        ${order.totalAmount}
+                        ${order?.totalAmount}
                       </div>
                     </td>
                     <td className="py-3 px-0 text-center">
-                      {order.id === editableOrderId ? (
+                      {order?.id === editableOrderId ? (
                         <select onChange={(e) => handleOrderStatus(e, order)}>
                           <option value="pending">Pending</option>
                           <option value="dispatched">Dispatched</option>
@@ -199,22 +199,22 @@ function AdminOrders() {
                       ) : (
                         <span
                           className={`${chooseColor(
-                            order.status
+                            order?.status
                           )} py-1 px-3 rounded-full text-xs`}
                         >
-                          {order.status}
+                          {order?.status}
                         </span>
                       )}
                     </td>
 
                     <td className="py-3 px-0 text-center">
                       <div className="flex items-center justify-center">
-                        {order.paymentMethod}
+                        {order?.paymentMethod}
                       </div>
                     </td>
 
                     <td className="py-3 px-0 text-center">
-                      {order.id === editableOrderId ? (
+                      {order?.id === editableOrderId ? (
                         <select
                           onChange={(e) => handleOrderPaymentStatus(e, order)}
                         >
@@ -224,26 +224,26 @@ function AdminOrders() {
                       ) : (
                         <span
                           className={`${chooseColor(
-                            order.paymentStatus
+                            order?.paymentStatus
                           )} py-1 px-3 rounded-full text-xs`}
                         >
-                          {order.paymentStatus}
+                          {order?.paymentStatus}
                         </span>
                       )}
                     </td>
 
                     <td className="py-3 px-0 text-center">
                       <div className="flex items-center justify-center">
-                        {order.createdAt
-                          ? new Date(order.createdAt).toLocaleString()
+                        {order?.createdAt
+                          ? new Date(order?.createdAt).toLocaleString()
                           : null}
                       </div>
                     </td>
 
                     <td className="py-3 px-0 text-center">
                       <div className="flex items-center justify-center">
-                        {order.updatedAt
-                          ? new Date(order.updatedAt).toLocaleString()
+                        {order?.updatedAt
+                          ? new Date(order?.updatedAt).toLocaleString()
                           : null}
                       </div>
                     </td>

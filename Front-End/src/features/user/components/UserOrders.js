@@ -72,7 +72,7 @@ export default function UserOrders() {
               <div className="mx-auto mt-12 bg-white max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                   <h1
-                    className="text-4xl my-5 font-bold tracking-tight text-gray-900"
+                    className="sm:text-xl text-4xl my-5 font-bold tracking-tight text-gray-900"
                     onClick={() => {
                       console.log(order);
                     }}
@@ -294,8 +294,8 @@ export default function UserOrders() {
                     <p>Total Items in Cart</p>
                     <p>{order?.totalItems} items</p>
                   </div>
-                  <div className="flex justify-between">
-                    <div>
+                  <div className="sm:block flex justify-between">
+                    <div className="sm:mb-7">
                       <p className="my-2 text-base font-medium text-gray-900">
                         Shipping Address :
                       </p>

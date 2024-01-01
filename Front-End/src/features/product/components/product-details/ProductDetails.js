@@ -9,8 +9,14 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addToCartAsync, selectItems } from "../../../cart/cartSlice";
+import { selectUserInfo } from "../../../user/userSlice";
 import { useAlert } from "react-alert";
 import { Grid } from "react-loader-spinner";
+import {
+  addToWishlistAsync,
+  fetchWishlistByUserIdAsync,
+  selectWishlist,
+} from "../../../wishlist/wishlistSlice";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -19,12 +25,18 @@ function classNames(...classes) {
 export default function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState();
   const [selectedSize, setSelectedSize] = useState();
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
+
   const items = useSelector(selectItems);
   const product = useSelector(selectProductById);
+  const wishlistProducts = useSelector(selectWishlist);
+
   const dispatch = useDispatch();
+
   const params = useParams();
   const alert = useAlert();
   const status = useSelector(selectProductListStatus);
+  const user = useSelector(selectUserInfo);
 
   const handleCart = (e) => {
     e.preventDefault();
@@ -42,6 +54,27 @@ export default function ProductDetails() {
       dispatch(addToCartAsync({ item: newItem, alert }));
     } else {
       alert?.error("Item Already added");
+    }
+  };
+
+  const handleWishlist = (e) => {
+    e.preventDefault();
+    if (!isButtonDisabled) {
+      const newItem = {
+        product: product.id,
+        user: user.id,
+      };
+      if (selectedColor) {
+        newItem.color = selectedColor;
+      }
+      if (selectedSize) {
+        newItem.size = selectedSize;
+      }
+      dispatch(addToWishlistAsync({ item: newItem, alert }));
+      dispatch(fetchWishlistByUserIdAsync());
+      setButtonDisabled(true);
+    } else {
+      alert?.error("Item already added in wishlist");
     }
   };
 
@@ -71,11 +104,11 @@ export default function ProductDetails() {
               className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
             >
               {product?.breadcrumbs &&
-                product?.breadcrumbs.map((breadcrumb) => (
-                  <li key={breadcrumb.id}>
+                product?.breadcrumbs?.map((breadcrumb) => (
+                  <li key={breadcrumb?.id}>
                     <div className="flex items-center">
                       <a className="mr-2 text-sm font-medium text-gray-900">
-                        {breadcrumb.name}
+                        {breadcrumb?.name}
                       </a>
                       <svg
                         width={16}
@@ -148,14 +181,14 @@ export default function ProductDetails() {
               <h2 className="sr-only">Product information</h2>
               <div>
                 <p className="ml-4 line-through text-gray-500">
-                  ${product.price}
+                  ${product?.price}
                 </p>
                 <p className="ml-4">${product?.discountedPrice}</p>
               </div>
 
               {/* Reviews */}
               <div className="mt-6">
-                <h3 className="sr-only">Reviews</h3>
+                <h3>Reviews</h3>
                 <div className="flex items-center">
                   <div className="flex items-center">
                     {[0, 1, 2, 3, 4].map((rating) => (
@@ -171,13 +204,7 @@ export default function ProductDetails() {
                       />
                     ))}
                   </div>
-                  <p className="sr-only">{product?.rating} out of 5 stars</p>
-                  {/* <a
-                  href={reviews.href}
-                  className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                >
-                  {reviews.totalCount} reviews
-                </a> */}
+                  <p className="pl-5">{product?.rating} out of 5 stars</p>
                 </div>
               </div>
 
@@ -318,6 +345,22 @@ export default function ProductDetails() {
                 >
                   Add To Cart
                 </button>
+                {isButtonDisabled ? (
+                  <button
+                    type="button"
+                    className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >
+                    Added to Wishlist
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleWishlist}
+                    type="submit"
+                    className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >
+                    Add To Wishlist
+                  </button>
+                )}
               </form>
             </div>
 
@@ -341,7 +384,7 @@ export default function ProductDetails() {
                 <div className="mt-4">
                   <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
                     {product?.highlights &&
-                      product?.highlights.map((highlight) => (
+                      product?.highlights?.map((highlight) => (
                         <li key={highlight} className="text-gray-400">
                           <span className="text-gray-600">{highlight}</span>
                         </li>

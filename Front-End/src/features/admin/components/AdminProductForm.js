@@ -9,19 +9,24 @@ import {
   updateProductAsync,
 } from "../../product/ProductSlice";
 import { useForm } from "react-hook-form";
-import { Navigate, useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Modal from "../../../common/Modal";
 import { useAlert } from "react-alert";
 
 function ProductForm() {
+  const dispatch = useDispatch();
+
   const { register, handleSubmit, setValue, reset } = useForm();
+
   const brands = useSelector(selectAllBrands);
   const categories = useSelector(selectAllCategories);
-  const dispatch = useDispatch();
-  const params = useParams();
   const selectedProduct = useSelector(selectProductById);
+
   const [openModal, setOpenModal] = useState(null);
+
+  const navigate = useNavigate();
+  const params = useParams();
   const alert = useAlert();
 
   const colors = [
@@ -58,29 +63,29 @@ function ProductForm() {
 
   useEffect(() => {
     if (params.id) {
-      dispatch(fetchProductByIdAsync(params.id));
+      dispatch(fetchProductByIdAsync(params?.id));
     } else {
       dispatch(clearSelectedProduct());
     }
   }, [params.id, dispatch]);
 
   useEffect(() => {
-    if (selectedProduct && params.id) {
-      setValue("title", selectedProduct.title);
-      setValue("description", selectedProduct.description);
-      setValue("price", selectedProduct.price);
-      setValue("discountPercentage", selectedProduct.discountPercentage);
-      setValue("thumbnail", selectedProduct.thumbnail);
-      setValue("stock", selectedProduct.stock);
-      setValue("image1", selectedProduct.images[0]);
-      setValue("image2", selectedProduct.images[1]);
-      setValue("image3", selectedProduct.images[2]);
-      setValue("brand", selectedProduct.brand);
-      setValue("category", selectedProduct.category);
-      setValue("highlight1", selectedProduct.highlights[0]);
-      setValue("highlight2", selectedProduct.highlights[1]);
-      setValue("highlight3", selectedProduct.highlights[2]);
-      setValue("highlight4", selectedProduct.highlights[3]);
+    if (selectedProduct && params?.id) {
+      setValue("title", selectedProduct?.title);
+      setValue("description", selectedProduct?.description);
+      setValue("price", selectedProduct?.price);
+      setValue("discountPercentage", selectedProduct?.discountPercentage);
+      setValue("thumbnail", selectedProduct?.thumbnail);
+      setValue("stock", selectedProduct?.stock);
+      setValue("image1", selectedProduct?.images[0]);
+      setValue("image2", selectedProduct?.images[1]);
+      setValue("image3", selectedProduct?.images[2]);
+      setValue("brand", selectedProduct?.brand);
+      setValue("category", selectedProduct?.category);
+      setValue("highlight1", selectedProduct?.highlights[0]);
+      setValue("highlight2", selectedProduct?.highlights[1]);
+      setValue("highlight3", selectedProduct?.highlights[2]);
+      setValue("highlight4", selectedProduct?.highlights[3]);
       setValue(
         "sizes",
         selectedProduct.sizes.map((size) => size.id)
@@ -96,6 +101,7 @@ function ProductForm() {
     const product = { ...selectedProduct };
     product.deleted = true;
     dispatch(updateProductAsync(product));
+    navigate("/");
   };
 
   return (
@@ -106,48 +112,48 @@ function ProductForm() {
           console.log(data);
           const product = { ...data };
           product.images = [
-            product.image1,
-            product.image2,
-            product.image3,
-            product.thumbnail,
+            product?.image1,
+            product?.image2,
+            product?.image3,
+            product?.thumbnail,
           ];
           product.highlights = [
-            product.highlight1,
-            product.highlight2,
-            product.highlight3,
-            product.highlight4,
+            product?.highlight1,
+            product?.highlight2,
+            product?.highlight3,
+            product?.highlight4,
           ];
           product.rating = 0;
-          if (product.colors) {
-            product.colors = product.colors.map((color) =>
-              colors.find((clr) => clr.id === color)
+          if (product?.colors) {
+            product.colors = product?.colors.map((color) =>
+              colors?.find((clr) => clr.id === color)
             );
           }
           if (product.sizes) {
-            product.sizes = product.sizes.map((size) =>
-              sizes.find((sz) => sz.id === size)
+            product.sizes = product?.sizes.map((size) =>
+              sizes?.find((sz) => sz.id === size)
             );
           }
 
           delete product["image1"];
           delete product["image2"];
           delete product["image3"];
-          product.price = +product.price;
-          product.stock = +product.stock;
-          product.discountPercentage = +product.discountPercentage;
+          product.price = +product?.price;
+          product.stock = +product?.stock;
+          product.discountPercentage = +product?.discountPercentage;
           console.log(product);
           if (params.id) {
-            product.id = params.id;
-            product.rating = selectedProduct.rating || 0;
+            product.id = params?.id;
+            product.rating = selectedProduct?.rating || 0;
             dispatch(updateProductAsync(product));
             alert.success("Product Updated");
             reset();
-            <Navigate to="/" replace={true}></Navigate>;
+            navigate("/");
           } else {
             dispatch(createProductAsync(product));
             alert.success("Product Created");
             reset();
-            <Navigate to="/" replace={true}></Navigate>;
+            navigate("/");
           }
         })}
       >
@@ -158,7 +164,7 @@ function ProductForm() {
             </h2>
 
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              {selectedProduct && selectedProduct.deleted && (
+              {selectedProduct && selectedProduct?.deleted && (
                 <h2 className="text-red-500 sm:col-span-6">
                   This product is deleted
                 </h2>
@@ -222,9 +228,9 @@ function ProductForm() {
                     })}
                   >
                     <option value="">--choose brand--</option>
-                    {brands.map((brand) => (
-                      <option key={brand.value} value={brand.value}>
-                        {brand.label}
+                    {brands?.map((brand) => (
+                      <option key={brand?.value} value={brand?.value}>
+                        {brand?.label}
                       </option>
                     ))}
                   </select>
@@ -239,17 +245,17 @@ function ProductForm() {
                   Colors
                 </label>
                 <div className="mt-2">
-                  {colors.map((color) => (
+                  {colors?.map((color) => (
                     <div className="flex items-center">
                       <input
-                        id={color.id}
+                        id={color?.id}
                         className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         type="checkbox"
                         {...register("colors", {})}
-                        key={color.id}
-                        value={color.id}
+                        key={color?.id}
+                        value={color?.id}
                       />
-                      <label htmlFor={color.id}>{color.name}</label>
+                      <label htmlFor={color?.id}>{color?.name}</label>
                     </div>
                   ))}
                 </div>
@@ -263,17 +269,17 @@ function ProductForm() {
                   Sizes
                 </label>
                 <div className="mt-2">
-                  {sizes.map((size) => (
+                  {sizes?.map((size) => (
                     <div className="flex items-center">
                       <input
-                        id={size.id}
+                        id={size?.id}
                         className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         type="checkbox"
                         {...register("sizes", {})}
-                        key={size.id}
-                        value={size.id}
+                        key={size?.id}
+                        value={size?.id}
                       />
-                      <label htmlFor={size.id}>{size.name}</label>
+                      <label htmlFor={size?.id}>{size?.name}</label>
                     </div>
                   ))}
                 </div>
@@ -294,8 +300,8 @@ function ProductForm() {
                   >
                     <option value="">--choose category--</option>
                     {categories.map((category) => (
-                      <option key={category.value} value={category.value}>
-                        {category.label}
+                      <option key={category?.value} value={category?.value}>
+                        {category?.label}
                       </option>
                     ))}
                   </select>
@@ -534,11 +540,14 @@ function ProductForm() {
           <button
             type="button"
             className="text-sm font-semibold leading-6 text-gray-900"
+            onClick={() => {
+              navigate("/");
+            }}
           >
             Cancel
           </button>
 
-          {selectedProduct && !selectedProduct.deleted && (
+          {selectedProduct && !selectedProduct?.deleted && (
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -560,7 +569,7 @@ function ProductForm() {
       </form>
       {selectedProduct && (
         <Modal
-          title={`Delete ${selectedProduct.title}`}
+          title={`Delete ${selectedProduct?.title}`}
           message="Are you sure you want to delete this Product ?"
           dangerOption="Delete"
           cancelOption="Cancel"
