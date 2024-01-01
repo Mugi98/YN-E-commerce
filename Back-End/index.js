@@ -122,8 +122,6 @@ passport.deserializeUser(async function (user, cb) {
   });
 });
 
-// Payments
-
 main().catch((err) => console.log(err));
 
 async function main() {
