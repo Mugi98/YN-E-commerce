@@ -29,7 +29,7 @@ function OrderSuccessPage() {
           <p className="mt-6 text-base leading-7 text-gray-600">
             You can check your order in{" "}
             <span className="text-indigo-600">
-              My Account {">"} <Link to="/orders">My Orders</Link>
+              My Account {">"} <Link to="/my-orders">My Orders</Link>
             </span>
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">

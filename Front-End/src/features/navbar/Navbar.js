@@ -19,7 +19,7 @@ const navigation = [
 ];
 const userNavigation = [
   { name: "Your Profile", link: "/profile" },
-  { name: "My Orders", link: "/orders" },
+  { name: "My Orders", link: "/my-orders" },
   { name: "My Wishlist", link: "/wishlist" },
   { name: "Log out", link: "/logout" },
 ];
@@ -77,7 +77,7 @@ function NavBar({ children }) {
                     </div>
                     <div className="hidden md:block">
                       <div className="ml-4 flex items-center md:ml-6">
-                        <Link to="/cart">
+                        <Link to="/my-cart">
                           <button
                             type="button"
                             className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -201,7 +201,7 @@ function NavBar({ children }) {
                       </div>
 
                       <div className="flex justify-end">
-                        <Link to="/cart">
+                        <Link to="/my-cart">
                           <button
                             type="button"
                             className="relative ml-auto items-end flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"

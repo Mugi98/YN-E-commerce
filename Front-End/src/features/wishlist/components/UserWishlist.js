@@ -8,6 +8,7 @@ import { StarIcon, TrashIcon } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
 import { Grid } from "react-loader-spinner";
 import { useEffect, useState } from "react";
+import emptyCart from "../../../assests/emptyCart.jpg";
 
 export default function UserWishlist() {
   const dispatch = useDispatch();
@@ -54,104 +55,135 @@ export default function UserWishlist() {
   };
 
   return (
-    <div className="bg-white">
-      <div>
-        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <section aria-labelledby="products-heading" className="pb-24 pt-6">
-            <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-3">
-              {/* Product grid */}
-              <div className="lg:col-span-3">
-                <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
-                  <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-                    {status === "loading" ? (
-                      <Grid
-                        height="80"
-                        width="80"
-                        color="rgb(79, 70, 229) "
-                        ariaLabel="grid-loading"
-                        radius="12.5"
-                        wrapperStyle={{}}
-                        wrapperClass=""
-                        visible={true}
-                      />
-                    ) : null}
-                    {items?.map((product) => (
-                      <div
-                        onClick={(e) => {
-                          handleRemove(e, product?.id);
-                        }}
-                        key={product?.product?.id}
-                        className="group relative border-solid border-2 p-2 border-gray-200"
-                      >
-                        <div className="min-h-60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none lg:h-80">
-                          <img
-                            src={product?.product?.thumbnail}
-                            alt={product?.product?.title}
-                            className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+    <>
+      {!(items?.length === 0) ? (
+        <div className="bg-white">
+          <div>
+            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <section
+                aria-labelledby="products-heading"
+                className="pb-24 pt-6"
+              >
+                <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-3">
+                  {/* Product grid */}
+                  <div className="lg:col-span-3">
+                    <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
+                      <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+                        {status === "loading" ? (
+                          <Grid
+                            height="80"
+                            width="80"
+                            color="rgb(79, 70, 229) "
+                            ariaLabel="grid-loading"
+                            radius="12.5"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                            visible={true}
                           />
-                          <button style={dynamicStyles}>
-                            <TrashIcon className="w-5 h-5 text-red-500" />
-                          </button>
-                        </div>
-                        <div className="mt-4 flex justify-between">
-                          <div>
-                            <h3 className="text-sm text-gray-700">
-                              <div href={product?.product?.id}>
-                                <span
-                                  aria-hidden="true"
-                                  className="absolute inset-0"
-                                />
-                                {product?.product?.title}
-                              </div>
-                            </h3>
-                            <p className="mt-1 text-sm text-gray-900 font-bold">
-                              {product?.product?.brand}
-                            </p>
-                            <p className="mt-1 text-sm whitespace-nowrap">
-                              {product?.product?.stock > 0 ? (
-                                <span className="text-green-500">In Stock</span>
-                              ) : (
-                                <span className="text-red-500">
-                                  Out of Stock
-                                </span>
-                              )}
-                            </p>
-                          </div>
-                          <div>
-                            <div>
-                              <p className="text-sm font-medium text-gray-500 text-end whitespace-nowrap">
-                                <span className="line-through pe-1 ">
-                                  $ {product?.product?.price}
-                                </span>
-                                (
-                                {Math.round(
-                                  product?.product?.discountPercentage
-                                )}
-                                % Off)
-                              </p>
-                              <p className="text-sm font-medium text-gray-900 text-end whitespace-nowrap">
-                                <span>
-                                  ${product?.product?.discountedPrice}
-                                </span>
-                              </p>
+                        ) : null}
+                        {items?.map((product) => (
+                          <div
+                            onClick={(e) => {
+                              handleRemove(e, product?.id);
+                            }}
+                            key={product?.product?.id}
+                            className="group relative border-solid border-2 p-2 border-gray-200"
+                          >
+                            <div className="min-h-60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none lg:h-80">
+                              <img
+                                src={product?.product?.thumbnail}
+                                alt={product?.product?.title}
+                                className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                              />
+                              <button style={dynamicStyles}>
+                                <TrashIcon className="w-5 h-5 text-red-500" />
+                              </button>
                             </div>
-                            <p className="text-sm flex justify-end pt-2 items-center gap-x-1.5 text-gray-900">
-                              <StarIcon className="w-4 h-4 inline"></StarIcon>
-                              <span className="align-bottom">
-                                {product?.product?.rating}
-                              </span>
-                            </p>
+                            <div className="mt-4 flex justify-between">
+                              <div>
+                                <h3 className="text-sm text-gray-700">
+                                  <div href={product?.product?.id}>
+                                    <span
+                                      aria-hidden="true"
+                                      className="absolute inset-0"
+                                    />
+                                    {product?.product?.title}
+                                  </div>
+                                </h3>
+                                <p className="mt-1 text-sm text-gray-900 font-bold">
+                                  {product?.product?.brand}
+                                </p>
+                                <p className="mt-1 text-sm whitespace-nowrap">
+                                  {product?.product?.stock > 0 ? (
+                                    <span className="text-green-500">
+                                      In Stock
+                                    </span>
+                                  ) : (
+                                    <span className="text-red-500">
+                                      Out of Stock
+                                    </span>
+                                  )}
+                                </p>
+                              </div>
+                              <div>
+                                <div>
+                                  <p className="text-sm font-medium text-gray-500 text-end whitespace-nowrap">
+                                    <span className="line-through pe-1 ">
+                                      $ {product?.product?.price}
+                                    </span>
+                                    (
+                                    {Math.round(
+                                      product?.product?.discountPercentage
+                                    )}
+                                    % Off)
+                                  </p>
+                                  <p className="text-sm font-medium text-gray-900 text-end whitespace-nowrap">
+                                    <span>
+                                      ${product?.product?.discountedPrice}
+                                    </span>
+                                  </p>
+                                </div>
+                                <p className="text-sm flex justify-end pt-2 items-center gap-x-1.5 text-gray-900">
+                                  <StarIcon className="w-4 h-4 inline"></StarIcon>
+                                  <span className="align-bottom">
+                                    {product?.product?.rating}
+                                  </span>
+                                </p>
+                              </div>
+                            </div>
                           </div>
-                        </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </section>
-        </main>
-      </div>
-    </div>
+              </section>
+            </main>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="mt-6 flex justify-center text-sm text-gray-500">
+            <img
+              className="lg:w-1/3"
+              src={emptyCart}
+              onClick={(e) => console.log(items)}
+              alt="emptyCart"
+            />
+          </div>
+          <p className="mt-5 flex justify-center">
+            <Link to="/">
+              <button
+                type="button"
+                className="font-medium text-indigo-600 hover:text-indigo-500"
+              >
+                &nbsp; Continue Shopping
+                <span aria-hidden="true"> &rarr;</span>
+              </button>
+            </Link>
+          </p>
+        </>
+      )}
+    </>
   );
 }

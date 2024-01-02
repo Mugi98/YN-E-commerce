@@ -51,6 +51,10 @@
         "dest": "index.js"
       },
       {
+        "src": "/auth/reset-password?(.*)",
+        "dest": "index.js"
+      },
+      {
         "src": "/cart",
         "dest": "index.js"
       },
