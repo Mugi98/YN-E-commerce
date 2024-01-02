@@ -45,12 +45,9 @@ exports.fetchOrderByUser = async (req, res) => {
 
 exports.createOrder = async (req, res) => {
   const order = new Order(req.body);
-  // here we have to update stocks;
-
   for (let item of order.items) {
     let product = await Product.findOne({ _id: item.product.id });
     product.$inc("stock", -1 * item.quantity);
-    // for optimum performance we should make inventory outside of product.
     await product.save();
   }
 
@@ -59,7 +56,7 @@ exports.createOrder = async (req, res) => {
     const user = await User.findById(order.user);
     // we can use await for this also
     sendMail({
-      to: user.email,
+      to: order.selectedAddress.email,
       html: invoiceTemplate(order),
       subject: "Order Received",
     });
