@@ -74,10 +74,7 @@ exports.resetPasswordRequest = async (req, res) => {
     user.resetPasswordToken = randomToken;
     await user?.save();
     const resetPageLink =
-      "http://localhost:8080/reset-password?token=" +
-      randomToken +
-      "&email=" +
-      email;
+      "/reset-password?token=" + randomToken + "&email=" + email;
     const subject = "Reset passwword for YN-Ecommerce";
     const html = `<p>Click <a href=${resetPageLink}>here</a> to reset you password.</p>`;
     if (email) {
